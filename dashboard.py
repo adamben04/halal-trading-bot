@@ -157,15 +157,18 @@ DARK_CSS = """
 
 st.markdown(DARK_CSS, unsafe_allow_html=True)
 
-try:
+ALPACA_API_KEY = ""
+ALPACA_SECRET_KEY = ""
+
+if "ALPACA_API_KEY" in st.secrets:
     ALPACA_API_KEY = st.secrets["ALPACA_API_KEY"]
     ALPACA_SECRET_KEY = st.secrets["ALPACA_SECRET_KEY"]
-except (KeyError, FileNotFoundError):
-    ALPACA_API_KEY = os.environ.get("ALPACA_API_KEY", "")
-    ALPACA_SECRET_KEY = os.environ.get("ALPACA_SECRET_KEY", "")
+elif os.environ.get("ALPACA_API_KEY"):
+    ALPACA_API_KEY = os.environ["ALPACA_API_KEY"]
+    ALPACA_SECRET_KEY = os.environ["ALPACA_SECRET_KEY"]
 
 if not ALPACA_API_KEY or not ALPACA_SECRET_KEY:
-    st.error("Missing API keys")
+    st.error(f"Missing API keys. Secrets found: {list(st.secrets.keys())}")
     st.stop()
 
 trading_client = TradingClient(ALPACA_API_KEY, ALPACA_SECRET_KEY, paper=True)
