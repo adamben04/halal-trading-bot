@@ -2,20 +2,8 @@ name: Halal Trading Bot
 
 on:
   schedule:
-    - cron: '30 13 * * 1-5'  # 9:30 AM ET - market open
-    - cron: '0 14 * * 1-5'   # 10:00 AM ET
-    - cron: '30 14 * * 1-5'  # 10:30 AM ET
-    - cron: '0 15 * * 1-5'   # 11:00 AM ET
-    - cron: '30 15 * * 1-5'  # 11:30 AM ET
-    - cron: '0 16 * * 1-5'   # 12:00 PM ET
-    - cron: '30 16 * * 1-5'  # 12:30 PM ET
-    - cron: '0 17 * * 1-5'   # 1:00 PM ET
-    - cron: '30 17 * * 1-5'  # 1:30 PM ET
-    - cron: '0 18 * * 1-5'   # 2:00 PM ET
-    - cron: '30 18 * * 1-5'  # 2:30 PM ET
-    - cron: '0 19 * * 1-5'   # 3:00 PM ET
-    - cron: '30 19 * * 1-5'  # 3:30 PM ET
-    - cron: '0 20 * * 1-5'   # 4:00 PM ET - market close
+    - cron: '*/10 13-19 * * 1-5'  # Every 10 min, 9 AM - 3:50 PM ET (UTC 13-19)
+    - cron: '0 20 * * 1-5'        # 4:00 PM ET - market close
   workflow_dispatch:
 
 jobs:

@@ -1,3 +1,6 @@
+import os
+import json
+import time
 import pandas as pd
 import numpy as np
 import yfinance as yf
@@ -5,6 +8,37 @@ from config import (
     RSI_OVERBOUGHT, RSI_OVERSOLD, RSI_NEUTRAL,
     VOLUME_SURGE_PCT, FAST_MA, SLOW_MA, TREND_MA
 )
+
+CACHE_DIR = "data/signal_cache"
+CACHE_TTL = 600  # 10 minutes
+
+
+def _cache_path(ticker):
+    os.makedirs(CACHE_DIR, exist_ok=True)
+    return os.path.join(CACHE_DIR, f"{ticker}.json")
+
+
+def _read_cache(ticker):
+    path = _cache_path(ticker)
+    if not os.path.exists(path):
+        return None
+    try:
+        with open(path) as f:
+            data = json.load(f)
+        if time.time() - data.get("ts", 0) < CACHE_TTL:
+            return data["result"]
+    except Exception:
+        pass
+    return None
+
+
+def _write_cache(ticker, result):
+    try:
+        path = _cache_path(ticker)
+        with open(path, "w") as f:
+            json.dump({"ts": time.time(), "result": result}, f)
+    except Exception:
+        pass
 
 
 def compute_rsi(series, period=14):
@@ -33,6 +67,10 @@ def compute_atr(high, low, close, period=14):
 
 
 def get_signals(ticker: str, timeframe: str = "daily") -> dict:
+    cached = _read_cache(ticker)
+    if cached:
+        return cached
+
     stock = yf.Ticker(ticker)
 
     if timeframe == "daily":
@@ -114,7 +152,7 @@ def get_signals(ticker: str, timeframe: str = "daily") -> dict:
     # Trailing stop check
     stop_price = latest["price"] - (latest["atr"] * 2)
 
-    return {
+    result = {
         "ticker": ticker,
         "signal": signal,
         "reasons": reasons,
@@ -122,6 +160,8 @@ def get_signals(ticker: str, timeframe: str = "daily") -> dict:
         "stop_price": round(stop_price, 2),
         "stop_pct": round((latest["price"] - stop_price) / latest["price"] * 100, 2),
     }
+    _write_cache(ticker, result)
+    return result
 
 
 def scan_universe(tickers: list) -> list:
