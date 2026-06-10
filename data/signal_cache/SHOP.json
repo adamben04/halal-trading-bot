@@ -1,0 +1,1 @@
+{"ts": 1781119720.839531, "result": {"ticker": "SHOP", "signal": "HOLD", "reasons": [], "indicators": {"price": 108.37, "rsi": 42.33, "macd": -0.9859, "macd_signal": -1.0065, "macd_hist": 0.0206, "atr": 2.12, "sma_200": 109.46, "sma_fast": 110.41, "sma_slow": 113.08, "volume": 808761, "volume_sma": 923428}, "stop_price": 104.13, "stop_pct": 3.91}}

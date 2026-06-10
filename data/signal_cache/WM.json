@@ -1,0 +1,1 @@
+{"ts": 1781119727.4829357, "result": {"ticker": "WM", "signal": "SELL", "reasons": ["RSI overbought 76.34"], "indicators": {"price": 223.87, "rsi": 76.34, "macd": 1.6857, "macd_signal": 1.2663, "macd_hist": 0.4194, "atr": 1.7, "sma_200": 219.35, "sma_fast": 220.19, "sma_slow": 218.1, "volume": 302967, "volume_sma": 228534}, "stop_price": 220.47, "stop_pct": 1.52}}

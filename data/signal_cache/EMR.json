@@ -1,0 +1,1 @@
+{"ts": 1781119727.8711965, "result": {"ticker": "EMR", "signal": "HOLD", "reasons": [], "indicators": {"price": 137.09, "rsi": 42.22, "macd": -0.4622, "macd_signal": -0.1073, "macd_hist": -0.3548, "atr": 1.95, "sma_200": 138.77, "sma_fast": 139.89, "sma_slow": 140.35, "volume": 383277, "volume_sma": 263968}, "stop_price": 133.19, "stop_pct": 2.84}}

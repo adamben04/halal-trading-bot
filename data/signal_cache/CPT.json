@@ -1,0 +1,1 @@
+{"ts": 1781119739.6890812, "result": {"ticker": "CPT", "signal": "HOLD", "reasons": [], "indicators": {"price": 115.75, "rsi": 71.41, "macd": 1.1753, "macd_signal": 1.2472, "macd_hist": -0.0719, "atr": 0.85, "sma_200": 107.04, "sma_fast": 114.5, "sma_slow": 111.41, "volume": 131361, "volume_sma": 161142}, "stop_price": 114.05, "stop_pct": 1.47}}

@@ -1,0 +1,1 @@
+{"ts": 1781119738.1958315, "result": {"ticker": "TVTX", "signal": "HOLD", "reasons": [], "indicators": {"price": 47.34, "rsi": 53.43, "macd": 0.3211, "macd_signal": 0.4461, "macd_hist": -0.125, "atr": 0.89, "sma_200": 44.73, "sma_fast": 47.78, "sma_slow": 46.37, "volume": 167426, "volume_sma": 223087}, "stop_price": 45.56, "stop_pct": 3.76}}

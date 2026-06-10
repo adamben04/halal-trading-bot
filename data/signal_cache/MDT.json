@@ -1,0 +1,1 @@
+{"ts": 1781119722.8719084, "result": {"ticker": "MDT", "signal": "HOLD", "reasons": [], "indicators": {"price": 80.36, "rsi": 45.82, "macd": 0.2298, "macd_signal": 0.5167, "macd_hist": -0.2869, "atr": 0.52, "sma_200": 77.81, "sma_fast": 81.16, "sma_slow": 79.51, "volume": 845536, "volume_sma": 945733}, "stop_price": 79.32, "stop_pct": 1.29}}

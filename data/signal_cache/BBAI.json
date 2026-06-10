@@ -1,0 +1,1 @@
+{"ts": 1781119720.5654712, "result": {"ticker": "BBAI", "signal": "HOLD", "reasons": [], "indicators": {"price": 4.0, "rsi": 35.26, "macd": -0.1275, "macd_signal": -0.1495, "macd_hist": 0.022, "atr": 0.12, "sma_200": 4.32, "sma_fast": 4.15, "sma_slow": 4.54, "volume": 3425332, "volume_sma": 5255091}, "stop_price": 3.76, "stop_pct": 6.0}}

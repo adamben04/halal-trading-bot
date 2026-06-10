@@ -1,0 +1,1 @@
+{"ts": 1781119720.1384528, "result": {"ticker": "QRVO", "signal": "HOLD", "reasons": [], "indicators": {"price": 95.79, "rsi": 29.17, "macd": -1.4995, "macd_signal": -1.4179, "macd_hist": -0.0815, "atr": 1.85, "sma_200": 97.04, "sma_fast": 98.47, "sma_slow": 101.06, "volume": 73780, "volume_sma": 164378}, "stop_price": 92.09, "stop_pct": 3.86}}

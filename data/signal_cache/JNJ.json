@@ -1,0 +1,1 @@
+{"ts": 1781119721.709905, "result": {"ticker": "JNJ", "signal": "SELL", "reasons": ["RSI overbought 79.89"], "indicators": {"price": 238.71, "rsi": 79.89, "macd": 2.434, "macd_signal": 2.3658, "macd_hist": 0.0682, "atr": 1.66, "sma_200": 228.25, "sma_fast": 235.51, "sma_slow": 230.34, "volume": 624904, "volume_sma": 880304}, "stop_price": 235.39, "stop_pct": 1.39}}

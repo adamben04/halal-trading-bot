@@ -1,0 +1,1 @@
+{"ts": 1781119726.347001, "result": {"ticker": "HON", "signal": "HOLD", "reasons": [], "indicators": {"price": 206.37, "rsi": 35.39, "macd": -2.9716, "macd_signal": -2.7561, "macd_hist": -0.2154, "atr": 2.01, "sma_200": 220.44, "sma_fast": 212.28, "sma_slow": 220.29, "volume": 373444, "volume_sma": 411364}, "stop_price": 202.35, "stop_pct": 1.95}}

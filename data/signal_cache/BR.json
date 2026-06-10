@@ -1,0 +1,1 @@
+{"ts": 1781119736.9954855, "result": {"ticker": "BR", "signal": "HOLD", "reasons": [], "indicators": {"price": 145.33, "rsi": 35.27, "macd": -1.2988, "macd_signal": -1.0812, "macd_hist": -0.2176, "atr": 1.5, "sma_200": 150.49, "sma_fast": 148.99, "sma_slow": 152.03, "volume": 167562, "volume_sma": 94267}, "stop_price": 142.33, "stop_pct": 2.06}}

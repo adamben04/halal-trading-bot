@@ -1,0 +1,1 @@
+{"ts": 1781119723.3927114, "result": {"ticker": "PFE", "signal": "HOLD", "reasons": [], "indicators": {"price": 25.65, "rsi": 51.92, "macd": -0.0367, "macd_signal": -0.0255, "macd_hist": -0.0112, "atr": 0.15, "sma_200": 25.9, "sma_fast": 25.71, "sma_slow": 25.69, "volume": 2693754, "volume_sma": 3834334}, "stop_price": 25.35, "stop_pct": 1.17}}

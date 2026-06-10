@@ -1,0 +1,1 @@
+{"ts": 1781119745.6573155, "result": {"ticker": "SM", "signal": "HOLD", "reasons": [], "indicators": {"price": 33.31, "rsi": 56.28, "macd": 0.0048, "macd_signal": -0.2474, "macd_hist": 0.2522, "atr": 0.58, "sma_200": 31.89, "sma_fast": 32.12, "sma_slow": 32.94, "volume": 498558, "volume_sma": 357065}, "stop_price": 32.15, "stop_pct": 3.48}}

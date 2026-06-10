@@ -1,0 +1,1 @@
+{"ts": 1781119738.3105845, "result": {"ticker": "ARWR", "signal": "HOLD", "reasons": [], "indicators": {"price": 70.38, "rsi": 36.24, "macd": -0.7777, "macd_signal": -0.5844, "macd_hist": -0.1933, "atr": 1.6, "sma_200": 75.51, "sma_fast": 72.4, "sma_slow": 72.9, "volume": 123398, "volume_sma": 153481}, "stop_price": 67.18, "stop_pct": 4.55}}

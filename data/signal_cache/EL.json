@@ -1,0 +1,1 @@
+{"ts": 1781119725.2428067, "result": {"ticker": "EL", "signal": "HOLD", "reasons": [], "indicators": {"price": 85.13, "rsi": 53.21, "macd": 0.6507, "macd_signal": 0.8043, "macd_hist": -0.1536, "atr": 1.46, "sma_200": 83.67, "sma_fast": 86.09, "sma_slow": 84.24, "volume": 447246, "volume_sma": 368281}, "stop_price": 82.21, "stop_pct": 3.43}}

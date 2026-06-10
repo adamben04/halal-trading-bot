@@ -1,0 +1,1 @@
+{"ts": 1781119740.4701762, "result": {"ticker": "LEVI", "signal": "HOLD", "reasons": [], "indicators": {"price": 23.13, "rsi": 49.92, "macd": 0.1362, "macd_signal": 0.1811, "macd_hist": -0.0449, "atr": 0.32, "sma_200": 22.36, "sma_fast": 23.37, "sma_slow": 22.95, "volume": 236693, "volume_sma": 234429}, "stop_price": 22.49, "stop_pct": 2.77}}

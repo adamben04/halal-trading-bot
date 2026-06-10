@@ -1,0 +1,1 @@
+{"ts": 1781119715.7190921, "result": {"ticker": "CRM", "signal": "HOLD", "reasons": [], "indicators": {"price": 171.08, "rsi": 18.91, "macd": -3.9556, "macd_signal": -3.8703, "macd_hist": -0.0853, "atr": 2.24, "sma_200": 181.9, "sma_fast": 177.3, "sma_slow": 186.66, "volume": 974798, "volume_sma": 1580797}, "stop_price": 166.6, "stop_pct": 2.62}}

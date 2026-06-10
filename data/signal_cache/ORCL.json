@@ -1,0 +1,1 @@
+{"ts": 1781119715.381622, "result": {"ticker": "ORCL", "signal": "HOLD", "reasons": [], "indicators": {"price": 202.85, "rsi": 37.55, "macd": -4.5485, "macd_signal": -4.8995, "macd_hist": 0.351, "atr": 5.26, "sma_200": 199.51, "sma_fast": 208.01, "sma_slow": 222.69, "volume": 3439008, "volume_sma": 3109855}, "stop_price": 192.33, "stop_pct": 5.19}}

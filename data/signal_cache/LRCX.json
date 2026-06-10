@@ -1,0 +1,1 @@
+{"ts": 1781119719.232628, "result": {"ticker": "LRCX", "signal": "HOLD", "reasons": [], "indicators": {"price": 320.62, "rsi": 48.79, "macd": -0.2076, "macd_signal": -0.0799, "macd_hist": -0.1277, "atr": 12.69, "sma_200": 301.12, "sma_fast": 325.6, "sma_slow": 328.25, "volume": 1102475, "volume_sma": 1491657}, "stop_price": 295.24, "stop_pct": 7.92}}

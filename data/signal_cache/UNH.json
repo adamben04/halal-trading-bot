@@ -1,0 +1,1 @@
+{"ts": 1781119721.877354, "result": {"ticker": "UNH", "signal": "HOLD", "reasons": [], "indicators": {"price": 405.02, "rsi": 45.11, "macd": 2.6375, "macd_signal": 3.94, "macd_hist": -1.3025, "atr": 3.54, "sma_200": 385.18, "sma_fast": 407.73, "sma_slow": 396.3, "volume": 516848, "volume_sma": 779292}, "stop_price": 397.94, "stop_pct": 1.75}}

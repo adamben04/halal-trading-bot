@@ -1,0 +1,1 @@
+{"ts": 1781119729.4154003, "result": {"ticker": "SLB", "signal": "HOLD", "reasons": [], "indicators": {"price": 55.71, "rsi": 39.76, "macd": -0.0836, "macd_signal": -0.1203, "macd_hist": 0.0367, "atr": 0.65, "sma_200": 55.99, "sma_fast": 56.11, "sma_slow": 56.3, "volume": 1009461, "volume_sma": 1542334}, "stop_price": 54.41, "stop_pct": 2.33}}

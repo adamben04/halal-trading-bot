@@ -1,0 +1,1 @@
+{"ts": 1781119734.2815607, "result": {"ticker": "NOVT", "signal": "HOLD", "reasons": [], "indicators": {"price": 153.72, "rsi": 33.05, "macd": -1.8471, "macd_signal": -1.307, "macd_hist": -0.5402, "atr": 4.35, "sma_200": 151.43, "sma_fast": 159.8, "sma_slow": 163.09, "volume": 86833, "volume_sma": 74504}, "stop_price": 145.02, "stop_pct": 5.66}}

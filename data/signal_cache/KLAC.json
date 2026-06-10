@@ -1,0 +1,1 @@
+{"ts": 1781119719.457182, "result": {"ticker": "KLAC", "signal": "HOLD", "reasons": [], "indicators": {"price": 2135.41, "rsi": 51.88, "macd": 26.2493, "macd_signal": 26.2682, "macd_hist": -0.019, "atr": 80.1, "sma_200": 1895.87, "sma_fast": 2128.55, "sma_slow": 2080.79, "volume": 109198, "volume_sma": 166902}, "stop_price": 1975.21, "stop_pct": 7.5}}

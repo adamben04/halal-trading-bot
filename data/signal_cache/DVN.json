@@ -1,0 +1,1 @@
+{"ts": 1781119744.7342815, "result": {"ticker": "DVN", "signal": "HOLD", "reasons": [], "indicators": {"price": 46.81, "rsi": 64.73, "macd": 0.3768, "macd_signal": 0.026, "macd_hist": 0.3508, "atr": 0.61, "sma_200": 47.05, "sma_fast": 45.13, "sma_slow": 45.62, "volume": 1557331, "volume_sma": 1532123}, "stop_price": 45.59, "stop_pct": 2.61}}

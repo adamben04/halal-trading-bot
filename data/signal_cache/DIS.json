@@ -1,0 +1,1 @@
+{"ts": 1781119730.171819, "result": {"ticker": "DIS", "signal": "HOLD", "reasons": [], "indicators": {"price": 99.1, "rsi": 49.77, "macd": -0.1501, "macd_signal": -0.2033, "macd_hist": 0.0532, "atr": 0.7, "sma_200": 103.12, "sma_fast": 99.25, "sma_slow": 99.83, "volume": 644063, "volume_sma": 849226}, "stop_price": 97.7, "stop_pct": 1.41}}

@@ -1,0 +1,1 @@
+{"ts": 1781119732.8182757, "result": {"ticker": "WDC", "signal": "HOLD", "reasons": [], "indicators": {"price": 491.68, "rsi": 33.22, "macd": -14.0524, "macd_signal": -13.3461, "macd_hist": -0.7064, "atr": 15.24, "sma_200": 498.57, "sma_fast": 510.69, "sma_slow": 543.79, "volume": 514990, "volume_sma": 840760}, "stop_price": 461.2, "stop_pct": 6.2}}

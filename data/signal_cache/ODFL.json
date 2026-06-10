@@ -1,0 +1,1 @@
+{"ts": 1781119741.6464067, "result": {"ticker": "ODFL", "signal": "HOLD", "reasons": [], "indicators": {"price": 233.03, "rsi": 25.8, "macd": -1.743, "macd_signal": 0.3315, "macd_hist": -2.0745, "atr": 4.71, "sma_200": 213.85, "sma_fast": 244.05, "sma_slow": 239.64, "volume": 182333, "volume_sma": 242834}, "stop_price": 223.61, "stop_pct": 4.04}}

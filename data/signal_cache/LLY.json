@@ -1,0 +1,1 @@
+{"ts": 1781119721.5119119, "result": {"ticker": "LLY", "signal": "HOLD", "reasons": [], "indicators": {"price": 1137.49, "rsi": 42.64, "macd": 3.0245, "macd_signal": 6.5838, "macd_hist": -3.5593, "atr": 12.83, "sma_200": 1042.94, "sma_fast": 1151.95, "sma_slow": 1124.4, "volume": 224426, "volume_sma": 438749}, "stop_price": 1111.83, "stop_pct": 2.26}}

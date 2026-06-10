@@ -1,0 +1,1 @@
+{"ts": 1781119722.268266, "result": {"ticker": "TMO", "signal": "HOLD", "reasons": [], "indicators": {"price": 482.35, "rsi": 58.62, "macd": 2.2397, "macd_signal": 2.4833, "macd_hist": -0.2436, "atr": 6.01, "sma_200": 465.47, "sma_fast": 482.19, "sma_slow": 480.16, "volume": 206721, "volume_sma": 213022}, "stop_price": 470.33, "stop_pct": 2.49}}

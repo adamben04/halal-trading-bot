@@ -1,0 +1,1 @@
+{"ts": 1781119739.534255, "result": {"ticker": "CHD", "signal": "SELL", "reasons": ["RSI overbought 76.41"], "indicators": {"price": 98.21, "rsi": 76.41, "macd": 0.7255, "macd_signal": 0.5712, "macd_hist": 0.1543, "atr": 0.65, "sma_200": 95.39, "sma_fast": 96.78, "sma_slow": 95.78, "volume": 165893, "volume_sma": 150233}, "stop_price": 96.91, "stop_pct": 1.32}}

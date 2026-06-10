@@ -1,0 +1,1 @@
+{"ts": 1781119722.5335133, "result": {"ticker": "ISRG", "signal": "HOLD", "reasons": [], "indicators": {"price": 413.43, "rsi": 40.63, "macd": -0.4349, "macd_signal": 1.0405, "macd_hist": -1.4754, "atr": 4.16, "sma_200": 432.55, "sma_fast": 421.47, "sma_slow": 415.49, "volume": 183649, "volume_sma": 234971}, "stop_price": 405.11, "stop_pct": 2.01}}

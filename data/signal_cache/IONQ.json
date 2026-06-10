@@ -1,0 +1,1 @@
+{"ts": 1781119734.79761, "result": {"ticker": "IONQ", "signal": "HOLD", "reasons": [], "indicators": {"price": 56.95, "rsi": 33.12, "macd": -1.5776, "macd_signal": -1.7826, "macd_hist": 0.205, "atr": 2.28, "sma_200": 57.23, "sma_fast": 59.29, "sma_slow": 63.49, "volume": 1503741, "volume_sma": 3919959}, "stop_price": 52.39, "stop_pct": 8.01}}

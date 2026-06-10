@@ -1,0 +1,1 @@
+{"ts": 1781119728.0545342, "result": {"ticker": "ITW", "signal": "HOLD", "reasons": [], "indicators": {"price": 251.06, "rsi": 42.56, "macd": 0.2424, "macd_signal": 0.8618, "macd_hist": -0.6194, "atr": 2.2, "sma_200": 251.71, "sma_fast": 254.29, "sma_slow": 251.8, "volume": 153683, "volume_sma": 150191}, "stop_price": 246.66, "stop_pct": 1.75}}

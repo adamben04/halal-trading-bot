@@ -1,0 +1,1 @@
+{"ts": 1781119743.5252447, "result": {"ticker": "OTIS", "signal": "HOLD", "reasons": [], "indicators": {"price": 69.87, "rsi": 53.88, "macd": 0.0549, "macd_signal": 0.1259, "macd_hist": -0.071, "atr": 0.57, "sma_200": 72.7, "sma_fast": 70.4, "sma_slow": 70.21, "volume": 276046, "volume_sma": 312244}, "stop_price": 68.73, "stop_pct": 1.63}}

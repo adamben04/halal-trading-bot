@@ -1,0 +1,1 @@
+{"ts": 1781119730.991685, "result": {"ticker": "SNOW", "signal": "HOLD", "reasons": [], "indicators": {"price": 240.3, "rsi": 50.85, "macd": -0.121, "macd_signal": -0.848, "macd_hist": 0.727, "atr": 5.31, "sma_200": 187.91, "sma_fast": 240.45, "sma_slow": 246.16, "volume": 418863, "volume_sma": 711068}, "stop_price": 229.68, "stop_pct": 4.42}}

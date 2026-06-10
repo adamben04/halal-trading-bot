@@ -1,0 +1,1 @@
+{"ts": 1781119735.3849301, "result": {"ticker": "COUR", "signal": "HOLD", "reasons": [], "indicators": {"price": 5.3, "rsi": 49.52, "macd": -0.0248, "macd_signal": -0.035, "macd_hist": 0.0102, "atr": 0.09, "sma_200": 5.56, "sma_fast": 5.32, "sma_slow": 5.43, "volume": 653200, "volume_sma": 777508}, "stop_price": 5.12, "stop_pct": 3.4}}

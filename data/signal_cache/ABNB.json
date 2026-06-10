@@ -1,0 +1,1 @@
+{"ts": 1781119720.944155, "result": {"ticker": "ABNB", "signal": "HOLD", "reasons": [], "indicators": {"price": 129.62, "rsi": 17.89, "macd": -1.299, "macd_signal": -0.9648, "macd_hist": -0.3342, "atr": 1.46, "sma_200": 135.56, "sma_fast": 132.42, "sma_slow": 133.65, "volume": 503500, "volume_sma": 354199}, "stop_price": 126.7, "stop_pct": 2.25}}

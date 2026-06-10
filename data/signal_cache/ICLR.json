@@ -1,0 +1,1 @@
+{"ts": 1781119734.392361, "result": {"ticker": "ICLR", "signal": "HOLD", "reasons": [], "indicators": {"price": 145.68, "rsi": 30.99, "macd": 0.0583, "macd_signal": 1.1624, "macd_hist": -1.1041, "atr": 2.55, "sma_200": 126.95, "sma_fast": 151.4, "sma_slow": 147.4, "volume": 117297, "volume_sma": 132552}, "stop_price": 140.58, "stop_pct": 3.5}}
