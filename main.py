@@ -41,7 +41,16 @@ class HalalTradingBot:
 
         # 1. Get account info
         account = self.trader.get_account()
-        log.info(f"Account equity: ${account['equity']:,.2f}")
+        log.info(f"Account equity: ${account['equity']:,.2f} | Cash: ${account['cash']:,.2f}")
+
+        # HALAL: Block trading if cash is negative (margin usage = haram)
+        if account["cash"] < 0:
+            log.warning(f"CASH NEGATIVE (${account['cash']:,.2f}) — margin detected. Closing positions to fix.")
+            positions = self.trader.get_positions()
+            for pos in positions:
+                log.info(f"FORCE SELL {pos['symbol']}: removing margin position")
+                self.trader.sell(pos["symbol"])
+            return
         self.risk_mgr = RiskManager(account["equity"])
 
         # 2. Check market
@@ -91,11 +100,12 @@ class HalalTradingBot:
         cached = self.screener.cache.get(ticker, {})
         sector = cached.get("sector", "Unknown")
 
-        # Calculate position size
+        # Calculate position size — cash only, no margin (halal)
         sizing = self.risk_mgr.calculate_position_size(
             account["equity"], price, stop_price, sector,
             [{"sector": p.get("sector", ""), "market_value": p.get("market_value", 0)}
-             for p in current_positions]
+             for p in current_positions],
+            account_cash=account["cash"]
         )
 
         if sizing["size"] == 0:

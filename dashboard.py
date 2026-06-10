@@ -187,7 +187,7 @@ cash = float(account.cash)
 buying_power = float(account.buying_power)
 positions_value = sum(float(p.market_value) for p in positions)
 total_pl = sum(float(p.unrealized_pl) for p in positions)
-total_pl_pct = (total_pl / positions_value * 100) if positions_value > 0 else 0
+total_pl_pct = (total_pl / equity * 100) if equity > 0 else 0
 
 col_logo, col_status = st.columns([3, 1])
 with col_logo:

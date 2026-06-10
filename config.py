@@ -16,15 +16,15 @@ IMPURE_INCOME_THRESHOLD = 0.05
 PROHIBITED_SECTORS = {"Financial Services", "Insurance"}
 PROHIBITED_KEYWORDS = ["alcohol", "gambling", "casino", "tobacco", "pork", "adult", "pornography", "weapon of mass destruction"]
 
-# Risk Management
+# Risk Management — Cash only, NO margin, NO leverage (haram)
 RISK_PER_TRADE = 0.01  # 1% of account per trade
 MAX_POSITIONS = 8
-MAX_SINGLE_POSITION_PCT = 0.20
+MAX_SINGLE_POSITION_PCT = 0.15  # Max 15% of equity per position
 MAX_SECTOR_PCT = 0.30
 DAILY_LOSS_LIMIT = 0.03
 MAX_DRAWDOWN = 0.15
 CONSECUTIVE_LOSS_LIMIT = 5
-CASH_RESERVE_PCT = 0.25
+CASH_RESERVE_PCT = 0.25  # Keep 25% cash buffer
 ATR_STOP_MULTIPLIER = 2.0
 MAX_STOP_PCT = 0.07
 

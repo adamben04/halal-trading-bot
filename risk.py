@@ -17,7 +17,8 @@ class RiskManager:
 
     def calculate_position_size(self, account_equity: float, entry_price: float,
                                  stop_price: float, sector: str,
-                                 current_positions: list) -> dict:
+                                 current_positions: list,
+                                 account_cash: float = None) -> dict:
         result = {"size": 0, "reason": ""}
 
         if self.halted:
@@ -50,11 +51,20 @@ class RiskManager:
             result["reason"] = f"Max positions reached: {len(current_positions)}"
             return result
 
-        # Cash reserve check
-        cash_needed = account_equity * CASH_RESERVE_PCT
-        available = account_equity - cash_needed
-        if available <= 0:
-            result["reason"] = "Cash reserve insufficient"
+        # HALAL: Cash-only — no margin, no leverage
+        # Available cash = actual cash in account (NOT buying_power which includes margin)
+        if account_cash is None:
+            account_cash = account_equity  # fallback
+        cash_reserve = account_equity * CASH_RESERVE_PCT
+        available_cash = account_cash - cash_reserve
+        if available_cash <= 0:
+            result["reason"] = f"Cash too low: ${account_cash:,.0f} (need ${cash_reserve:,.0f} reserve)"
+            return result
+
+        # HALAL: Total positions must never exceed equity (no margin)
+        total_exposure = sum(abs(p.get("market_value", 0)) for p in current_positions)
+        if total_exposure >= account_equity:
+            result["reason"] = f"Fully invested: ${total_exposure:,.0f} / ${account_equity:,.0f}"
             return result
 
         # Position size calculation
@@ -70,12 +80,21 @@ class RiskManager:
         max_shares = (account_equity * MAX_SINGLE_POSITION_PCT) / entry_price
         shares = min(shares, max_shares)
 
+        # Cash cap — can only spend what we have
+        max_by_cash = int(available_cash / entry_price) if entry_price > 0 else 0
+        shares = min(shares, max_by_cash)
+
         # Sector cap check
         sector_value = sum(p.get("market_value", 0) for p in current_positions if p.get("sector") == sector)
         sector_limit = account_equity * MAX_SECTOR_PCT
         sector_available = sector_limit - sector_value
         max_by_sector = sector_available / entry_price if sector_available > 0 else 0
         shares = min(shares, max_by_sector)
+
+        # Exposure cap — new position + existing must stay under equity
+        max_new_value = account_equity - total_exposure
+        max_by_exposure = int(max_new_value / entry_price) if entry_price > 0 else 0
+        shares = min(shares, max_by_exposure)
 
         # Stop loss width cap
         stop_pct = stop_distance / entry_price
