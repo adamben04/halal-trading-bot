@@ -1,3 +1,4 @@
+import os
 import time
 import json
 import logging
@@ -11,6 +12,9 @@ from database import (
     init_db, log_open_position, log_close_position,
     save_daily_snapshot, get_open_positions
 )
+
+os.makedirs("logs", exist_ok=True)
+os.makedirs("data", exist_ok=True)
 
 logging.basicConfig(
     level=logging.INFO,
