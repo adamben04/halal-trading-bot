@@ -1,108 +1,80 @@
 import streamlit as st
-import pandas as pd
+import os
+from datetime import datetime, timedelta
+from alpaca.trading.client import TradingClient
+from alpaca.data.historical.stock import StockHistoricalDataClient
+from alpaca.data.requests import StockBarsRequest
+from alpaca.data.timeframe import TimeFrame
 import plotly.graph_objects as go
-from database import get_db, get_open_positions, get_all_trades, get_daily_snapshots, get_performance_stats
+import pandas as pd
 
 st.set_page_config(page_title="Halal Trading Bot", layout="wide")
-st.title("Halal Trading Bot Dashboard")
 
-# Sidebar
-page = st.sidebar.selectbox("Navigate", ["Overview", "Positions", "Trades", "Performance", "Journal"])
+ALPACA_API_KEY = os.environ.get("ALPACA_API_KEY", "")
+ALPACA_SECRET_KEY = os.environ.get("ALPACA_SECRET_KEY", "")
 
-# Overview
-if page == "Overview":
-    snapshots = get_daily_snapshots()
-    positions = get_open_positions()
+if not ALPACA_API_KEY or not ALPACA_SECRET_KEY:
+    st.error("Missing ALPACA_API_KEY or ALPACA_SECRET_KEY secrets")
+    st.stop()
 
-    col1, col2, col3, col4 = st.columns(4)
+trading_client = TradingClient(ALPACA_API_KEY, ALPACA_SECRET_KEY, paper=True)
+data_client = StockHistoricalDataClient(ALPACA_API_KEY, ALPACA_SECRET_KEY)
 
-    if snapshots:
-        latest = snapshots[-1]
-        prev = snapshots[-2] if len(snapshots) > 1 else latest
-        daily_pnl = latest.get("daily_pnl", 0)
-        total_return = latest.get("total_return_pct", 0)
+st.title("Halal Trading Bot")
 
-        col1.metric("Equity", f"${latest['equity']:,.2f}", f"{total_return:+.2f}%")
-        col2.metric("Cash", f"${latest['cash']:,.2f}")
-        col3.metric("Positions", f"${latest['positions_value']:,.2f}")
-        col4.metric("Daily P&L", f"${daily_pnl:,.2f}")
+try:
+    account = trading_client.get_account()
+    clock = trading_client.get_clock()
+    positions = trading_client.get_all_positions()
+except Exception as e:
+    st.error(f"Alpaca connection failed: {e}")
+    st.stop()
 
-        # Equity curve
-        dates = [s["date"] for s in snapshots]
-        equities = [s["equity"] for s in snapshots]
+market_status = "OPEN" if clock.is_open else "CLOSED"
+next_open = clock.next_open.strftime("%I:%M %p ET") if clock.next_open else "N/A"
 
-        fig = go.Figure()
-        fig.add_trace(go.Scatter(x=dates, y=equities, mode="lines", name="Portfolio"))
-        fig.update_layout(title="Equity Curve", xaxis_title="Date", yaxis_title="Equity ($)")
-        st.plotly_chart(fig, use_container_width=True)
-    else:
-        st.info("No data yet. Bot hasn't run.")
+col1, col2, col3, col4, col5 = st.columns(5)
+col1.metric("Equity", f"${float(account.equity):,.2f}")
+col2.metric("Cash", f"${float(account.cash):,.2f}")
+col3.metric("Buying Power", f"${float(account.buying_power):,.2f}")
+col4.metric("Market", market_status)
+col5.metric("Next Open", next_open)
 
-    # Open positions table
-    st.subheader("Open Positions")
-    if positions:
-        df = pd.DataFrame(positions)
-        st.dataframe(df[["symbol", "qty", "avg_entry_price", "current_price",
-                         "unrealized_pl", "unrealized_plpc"]], use_container_width=True)
-    else:
-        st.info("No open positions")
+st.divider()
 
-# Positions
-elif page == "Positions":
-    positions = get_open_positions()
+if positions:
     st.subheader(f"Open Positions ({len(positions)})")
+    rows = []
+    for p in positions:
+        rows.append({
+            "Symbol": p.symbol,
+            "Qty": float(p.qty),
+            "Entry": f"${float(p.avg_entry_price):.2f}",
+            "Current": f"${float(p.current_price):.2f}",
+            "Mkt Value": f"${float(p.market_value):,.2f}",
+            "P&L": f"${float(p.unrealized_pl):+,.2f}",
+            "P&L %": f"{float(p.unrealized_plpc)*100:+.2f}%",
+        })
+    st.dataframe(pd.DataFrame(rows), use_container_width=True)
 
-    if positions:
-        for pos in positions:
-            with st.expander(f"{pos['symbol']} — {pos['qty']} shares"):
-                st.write(f"Entry Price: ${pos['avg_entry_price']}")
-                st.write(f"Opened: {pos['opened_at']}")
-                st.write(f"Sector: {pos.get('sector', 'Unknown')}")
-                if st.button(f"Close {pos['symbol']}", key=f"close_{pos['id']}"):
-                    st.warning("Manual close not implemented yet")
-    else:
-        st.info("No open positions")
+    st.subheader("Equity Chart (30d)")
+    try:
+        bars_req = StockBarsRequest(
+            symbol_or_symbols=["SPY"],
+            timeframe=TimeFrame.Day,
+            start=datetime.now() - timedelta(days=30),
+        )
+        spy_bars = data_client.get_stock_bars(bars_req)["SPY"]
+        spy_dates = [b.timestamp.date() for b in spy_bars]
+        spy_close = [b.close for b in spy_bars]
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(x=spy_dates, y=spy_close, name="SPY"))
+        fig.update_layout(height=300, margin=dict(t=10))
+        st.plotly_chart(fig, use_container_width=True)
+    except Exception:
+        st.info("Could not load SPY chart")
+else:
+    st.info("No open positions yet. Bot will trade when market opens at 9:30 AM ET.")
 
-# Trades
-elif page == "Trades":
-    trades = get_all_trades()
-    st.subheader(f"Recent Trades ({len(trades)})")
-
-    if trades:
-        df = pd.DataFrame(trades)
-        st.dataframe(df, use_container_width=True)
-    else:
-        st.info("No trades yet")
-
-# Performance
-elif page == "Performance":
-    stats = get_performance_stats()
-    st.subheader("Performance Stats")
-
-    col1, col2, col3, col4 = st.columns(4)
-    col1.metric("Total Trades", stats["total_trades"])
-    col2.metric("Win Rate", f"{stats['win_rate']}%")
-    col3.metric("Avg P&L", f"${stats['avg_pnl']}")
-    col4.metric("Profit Factor", f"{stats['profit_factor']}")
-
-    st.write(f"Total P&L: ${stats['total_pnl']}")
-    st.write(f"Wins: {stats['wins']} | Losses: {stats['losses']}")
-
-    # Trade distribution
-    trades = get_all_trades()
-    if trades:
-        df = pd.DataFrame(trades)
-        if "price" in df.columns:
-            st.bar_chart(df["price"].value_counts().head(20))
-
-# Journal
-elif page == "Journal":
-    st.subheader("Trade Journal")
-    st.info("Journal entries will appear here after trades are logged")
-
-    with st.form("new_entry"):
-        pre = st.text_area("Pre-Trade Analysis")
-        market = st.selectbox("Market Conditions", ["Bull", "Bear", "Sideways", "Volatile"])
-        lessons = st.text_area("Lessons Learned")
-        if st.form_submit_button("Save"):
-            st.success("Entry saved (not implemented yet)")
+st.divider()
+st.caption(f"Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} | Paper Trading")
