@@ -6,12 +6,9 @@ from alpaca.data.historical.stock import StockHistoricalDataClient
 from alpaca.data.requests import StockBarsRequest
 from alpaca.data.timeframe import TimeFrame
 import plotly.graph_objects as go
-import pandas as pd
 
 st.set_page_config(page_title="Trading Bot", layout="wide", initial_sidebar_state="collapsed")
 
-# ========== ROBINHOOD EXACT CSS ==========
-# All values from Robinhood's actual design system (verified via 20 parallel research agents)
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
@@ -23,59 +20,63 @@ st.markdown("""
         -moz-osx-font-smoothing: grayscale !important;
     }
 
-    /* ===== HIDE ALL STREAMLIT CHROME ===== */
+    /* ===== HIDE STREAMLIT CHROME ===== */
     #MainMenu, footer, header[data-testid="stHeader"],
     .stDeployButton, div[data-testid="stToolbar"],
     div[data-testid="stDecoration"], div[data-testid="stStatusWidget"] {
         visibility: hidden; height: 0; display: none; position: fixed;
     }
 
-    /* ===== ROBINHOOD DARK CANVAS: #1A1A1A ===== */
+    /* ===== ROBINHOOD CANVAS: #110e08 (warm black) ===== */
     .stApp {
-        background: #1A1A1A !important;
+        background: #110e08 !important;
     }
-    section[data-testid="stSidebar"] { background: #1A1A1A; }
+    section[data-testid="stSidebar"] { background: #110e08; }
 
     .block-container {
-        padding-top: 20px !important;
+        padding-top: 16px !important;
         padding-bottom: 0px !important;
         padding-left: 16px !important;
         padding-right: 16px !important;
-        max-width: 1000px !important;
+        max-width: 960px !important;
     }
 
-    /* ===== PORTFOLIO VALUE — HERO NUMBER ===== */
-    /* Robinhood: 36-40px, weight 600-700, color #F5F5F5, letter-spacing -0.02em */
+    /* ===== SCROLLBAR ===== */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #110e08; }
+    ::-webkit-scrollbar-thumb { background: #35322d; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #4d4a46; }
+
+    /* ===== PORTFOLIO HERO ===== */
+    .rh-hero {
+        padding: 4px 0 0 0;
+    }
     .rh-hero-value {
-        font-size: 40px;
+        font-size: 36px;
         font-weight: 700;
-        letter-spacing: -0.02em;
+        letter-spacing: -0.025em;
         line-height: 1.0;
-        color: #F5F5F5;
+        color: #FFFFFF;
         margin: 0;
         padding: 0;
     }
-
-    /* ===== TODAY'S CHANGE ===== */
-    /* Robinhood: 14-16px, weight 500, color #00C805 or #FF5000 */
     .rh-change {
-        font-size: 15px;
+        font-size: 14px;
         font-weight: 500;
         line-height: 1.4;
-        margin: 4px 0 0 0;
+        margin: 6px 0 0 0;
     }
     .rh-change.up { color: #00C805; }
     .rh-change.down { color: #FF5000; }
 
-    /* ===== MARKET STATUS DOT ===== */
-    /* Robinhood: small colored dot with label */
+    /* ===== MARKET STATUS ===== */
     .rh-status {
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        font-size: 11px;
-        font-weight: 600;
-        letter-spacing: 0.04em;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
         text-transform: uppercase;
     }
     .rh-dot {
@@ -90,57 +91,60 @@ st.markdown("""
         50% { opacity: 0.3; }
     }
 
-    /* ===== STAT CARDS — Robinhood uses 242424 surface ===== */
+    /* ===== STAT CARDS ===== */
+    .rh-stats {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 8px;
+        margin: 12px 0;
+    }
     .rh-stat {
-        background: #242424;
-        border: 1px solid rgba(255,255,255,0.08);
-        border-radius: 16px;
-        padding: 16px 20px;
+        background: #1c180d;
+        border: 1px solid #35322d;
+        border-radius: 0px;
+        padding: 14px 16px;
     }
     .rh-stat-label {
-        font-size: 11px;
+        font-size: 10px;
         font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: #AAAAAA;
+        letter-spacing: 0.06em;
+        color: #4d4a46;
         margin-bottom: 6px;
     }
     .rh-stat-val {
-        font-size: 18px;
+        font-size: 16px;
         font-weight: 700;
-        color: #F5F5F5;
+        color: #FFFFFF;
         letter-spacing: -0.01em;
+        font-feature-settings: 'tnum';
     }
 
-    /* ===== SECTION LABEL ===== */
-    /* Robinhood: 12px, weight 700, uppercase, letter-spacing 0.05em, color #AAAAAA */
+    /* ===== SECTION HEADER ===== */
     .rh-section {
-        font-size: 12px;
+        font-size: 11px;
         font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: #AAAAAA;
-        padding-bottom: 10px;
-        border-bottom: 1px solid rgba(255,255,255,0.08);
-        margin-bottom: 4px;
+        letter-spacing: 0.06em;
+        color: #4d4a46;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #35322d;
+        margin-bottom: 0;
     }
 
-    /* ===== POSITION ROW — Robinhood pixel-perfect ===== */
-    /* Robinhood: 76px height, 16px padding, border-bottom 1px solid rgba(255,255,255,0.08) */
+    /* ===== POSITION ROW ===== */
     .rh-pos {
         display: flex;
         align-items: center;
-        height: 72px;
-        padding: 0 16px;
-        border-bottom: 1px solid rgba(255,255,255,0.04);
-        transition: background-color 150ms ease-out;
+        height: 64px;
+        padding: 0 12px;
+        border-bottom: 1px solid #1c180d;
+        transition: background-color 120ms ease-out;
         cursor: default;
     }
     .rh-pos:hover {
-        background: rgba(255,255,255,0.03);
+        background: rgba(255,255,255,0.02);
     }
-
-    /* Left: icon + ticker */
     .rh-pos-left {
         display: flex;
         align-items: center;
@@ -148,125 +152,119 @@ st.markdown("""
         flex: 1;
         min-width: 0;
     }
-
-    /* Robinhood: 36px circle, first 2 letters, colored bg */
     .rh-icon {
-        width: 36px;
-        height: 36px;
-        border-radius: 18px;
+        width: 32px;
+        height: 32px;
+        border-radius: 16px;
         display: flex;
         align-items: center;
         justify-content: center;
         font-weight: 700;
-        font-size: 12px;
+        font-size: 11px;
         letter-spacing: 0.02em;
         flex-shrink: 0;
     }
-
-    /* Robinhood ticker: 16px, weight 600, color #F5F5F5 */
     .rh-ticker {
-        font-size: 16px;
+        font-size: 15px;
         font-weight: 600;
-        color: #F5F5F5;
+        color: #FFFFFF;
         letter-spacing: -0.01em;
         line-height: 1.2;
     }
-    /* Robinhood subtitle: 13px, weight 400, color #AAAAAA */
     .rh-sub {
-        font-size: 13px;
-        color: #AAAAAA;
+        font-size: 12px;
+        color: #4d4a46;
         line-height: 1.3;
         margin-top: 1px;
     }
-
-    /* Right: value + P&L */
     .rh-pos-right {
         text-align: right;
         flex-shrink: 0;
     }
-    /* Robinhood value: 16px, weight 600, #F5F5F5, tnum */
     .rh-pos-val {
-        font-size: 16px;
+        font-size: 15px;
         font-weight: 600;
-        color: #F5F5F5;
+        color: #FFFFFF;
         letter-spacing: -0.01em;
         font-feature-settings: 'tnum';
     }
-    /* Robinhood P&L: 12px, weight 400, #00C805 or #FF5000 */
     .rh-pos-pl {
         font-size: 12px;
         font-weight: 400;
         line-height: 1.35;
-        letter-spacing: 0.02em;
+        letter-spacing: 0.01em;
         font-feature-settings: 'tnum';
         margin-top: 2px;
     }
     .rh-pos-pl.up { color: #00C805; }
     .rh-pos-pl.down { color: #FF5000; }
 
+    /* ===== TIME TABS ===== */
+    .rh-tabs {
+        display: flex;
+        gap: 2px;
+        padding: 3px;
+        background: #1c180d;
+        border-radius: 0px;
+        width: fit-content;
+        margin: 8px 0;
+    }
+    .rh-tab {
+        padding: 5px 14px;
+        border-radius: 0px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #4d4a46;
+        cursor: pointer;
+        transition: all 120ms ease-out;
+    }
+    .rh-tab:hover { color: #AAAAAA; }
+    .rh-tab.active {
+        background: #35322d;
+        color: #FFFFFF;
+    }
+
     /* ===== CASH ROW ===== */
     .rh-cash {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 16px;
-        background: #242424;
-        border: 1px solid rgba(255,255,255,0.08);
-        border-radius: 16px;
-    }
-
-    /* ===== TIME TABS — Robinhood pill selector ===== */
-    .rh-tabs {
-        display: flex;
-        gap: 4px;
-        padding: 3px;
-        background: rgba(255,255,255,0.04);
-        border-radius: 999px;
-        width: fit-content;
-    }
-    .rh-tab {
-        padding: 5px 14px;
-        border-radius: 999px;
-        font-size: 13px;
-        font-weight: 600;
-        color: #AAAAAA;
-        cursor: pointer;
-        transition: all 150ms ease-out;
-    }
-    .rh-tab.active {
-        background: rgba(255,255,255,0.1);
-        color: #F5F5F5;
+        padding: 14px 16px;
+        background: #1c180d;
+        border: 1px solid #35322d;
+        border-radius: 0px;
+        margin: 12px 0;
     }
 
     /* ===== FOOTER ===== */
     .rh-footer {
         text-align: center;
-        font-size: 11px;
-        color: #4D4A46;
-        letter-spacing: 0.04em;
+        font-size: 10px;
+        color: #35322d;
+        letter-spacing: 0.05em;
         text-transform: uppercase;
-        padding: 24px 0 8px 0;
+        padding: 20px 0 8px 0;
     }
 
     /* ===== OVERRIDE STREAMLIT METRICS ===== */
     div[data-testid="stMetric"] {
-        background: #242424 !important;
-        border: 1px solid rgba(255,255,255,0.08) !important;
-        border-radius: 16px !important;
-        padding: 14px 18px !important;
+        background: #1c180d !important;
+        border: 1px solid #35322d !important;
+        border-radius: 0px !important;
+        padding: 12px 14px !important;
         border-left: none !important;
         box-shadow: none !important;
     }
     div[data-testid="stMetric"] label p {
-        color: #AAAAAA !important;
-        font-size: 11px !important;
+        color: #4d4a46 !important;
+        font-size: 10px !important;
         font-weight: 700 !important;
         text-transform: uppercase !important;
-        letter-spacing: 0.05em !important;
+        letter-spacing: 0.06em !important;
     }
     div[data-testid="stMetric"] [data-testid="stMetricValue"] p {
-        color: #F5F5F5 !important;
-        font-size: 20px !important;
+        color: #FFFFFF !important;
+        font-size: 18px !important;
         font-weight: 700 !important;
     }
     div[data-testid="stMetric"] [data-testid="stMetricDelta"] > div {
@@ -276,9 +274,13 @@ st.markdown("""
         color: inherit !important;
     }
 
-    /* Remove streamlit padding between columns */
     [data-testid="stHorizontalBlock"] {
-        gap: 10px !important;
+        gap: 8px !important;
+    }
+
+    /* ===== CHART CONTAINER ===== */
+    .rh-chart {
+        margin: 4px 0;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -316,35 +318,27 @@ positions_value = sum(float(p.market_value) for p in positions)
 total_pl = sum(float(p.unrealized_pl) for p in positions)
 total_pl_pct = (total_pl / equity * 100) if equity > 0 else 0
 
-# ========== PORTFOLIO HEADER ==========
-# Robinhood: market status top-right, portfolio value left-aligned hero
-
-# Market status (top right)
+# ========== HEADER: Market status + Portfolio value ==========
 if clock.is_open:
     st.markdown(f'<div style="text-align:right;"><span class="rh-status"><span class="rh-dot open"></span><span style="color:#00C805;">MARKET OPEN</span></span></div>', unsafe_allow_html=True)
 else:
     st.markdown(f'<div style="text-align:right;"><span class="rh-status"><span class="rh-dot closed"></span><span style="color:#FF5000;">MARKET CLOSED</span></span></div>', unsafe_allow_html=True)
 
-# Robinhood: Portfolio value is the hero — large, bold, top-left
 pl_sign = "+" if total_pl >= 0 else ""
 pl_class = "up" if total_pl >= 0 else "down"
 
 st.markdown(f"""
-<div style="padding-top:4px;">
+<div class="rh-hero">
     <div class="rh-hero-value">${equity:,.2f}</div>
     <div class="rh-change {pl_class}">{pl_sign}${total_pl:,.2f} ({pl_sign}{total_pl_pct:.2f}%) today</div>
 </div>
 """, unsafe_allow_html=True)
 
-# ========== CHART — Robinhood line chart with gradient fill ==========
-# Robinhood: full-width, spline, green/red based on performance, gradient fill, no gridlines
-
-# Try portfolio history first, fallback to SPY benchmark
+# ========== CHART ==========
 chart_dates = []
 chart_values = []
 chart_source = None
 
-# Method 1: Portfolio history from Alpaca
 try:
     ph = trading_client.get_portfolio_history(period="1M", timeframe="1D")
     if ph and ph.timestamp and ph.equity and len(ph.timestamp) > 1:
@@ -354,7 +348,6 @@ try:
 except Exception:
     pass
 
-# Method 2: If no portfolio history, use SPY as proxy for chart appearance
 if not chart_dates:
     try:
         bars_req = StockBarsRequest(
@@ -365,7 +358,6 @@ if not chart_dates:
         spy_bars = data_client.get_stock_bars(bars_req)["SPY"]
         if spy_bars and len(spy_bars) > 1:
             chart_dates = [b.timestamp.date() for b in spy_bars]
-            # Scale SPY to look like portfolio value
             spy_close = [b.close for b in spy_bars]
             spy_start = spy_close[0]
             chart_values = [(v / spy_start) * equity for v in spy_close]
@@ -376,8 +368,6 @@ if not chart_dates:
 if chart_dates and chart_values and len(chart_dates) > 1:
     is_up = chart_values[-1] >= chart_values[0]
     chart_color = "#00C805" if is_up else "#FF5000"
-
-    # Parse RGB for gradient
     r = int(chart_color[1:3], 16)
     g = int(chart_color[3:5], 16)
     b = int(chart_color[5:7], 16)
@@ -389,36 +379,35 @@ if chart_dates and chart_values and len(chart_dates) > 1:
         mode="lines",
         line=dict(color=chart_color, width=2, shape="spline"),
         fill="tozeroy",
-        fillcolor=f"rgba({r},{g},{b},0.08)",
+        fillcolor=f"rgba({r},{g},{b},0.06)",
         hovertemplate="%{x|%b %d}<br>$%{y:,.2f}<extra></extra>",
         showlegend=False,
     ))
     fig.update_layout(
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
-        font=dict(color="#AAAAAA", size=11),
+        font=dict(color="#4d4a46", size=11, family="Inter"),
         margin=dict(l=0, r=0, t=4, b=0),
-        height=200,
+        height=180,
         xaxis=dict(
             showgrid=False, zeroline=False, showline=False,
-            showticklabels=True, tickformat="%b %d", nticks=6,
-            tickfont=dict(size=11, color="#666666"),
+            showticklabels=True, tickformat="%b %d", nticks=5,
+            tickfont=dict(size=10, color="#35322d"),
         ),
         yaxis=dict(
             showgrid=False, zeroline=False, showline=False,
             showticklabels=True, tickformat="$,.0f", nticks=4,
-            tickfont=dict(size=11, color="#666666"),
+            tickfont=dict(size=10, color="#35322d"),
             side="right",
         ),
         hovermode="x unified",
         hoverlabel=dict(
-            bgcolor="#242424", bordercolor="#3A3A3A",
-            font=dict(size=13, color="#F5F5F5", family="Inter"),
+            bgcolor="#1c180d", bordercolor="#35322d",
+            font=dict(size=12, color="#FFFFFF", family="Inter"),
         ),
     )
     st.plotly_chart(fig, use_container_width=True)
 
-    # Robinhood: time range tabs below chart
     st.markdown("""
     <div class="rh-tabs">
         <span class="rh-tab">1D</span>
@@ -430,36 +419,28 @@ if chart_dates and chart_values and len(chart_dates) > 1:
     </div>
     """, unsafe_allow_html=True)
 else:
-    st.markdown('<div style="height:200px;display:flex;align-items:center;justify-content:center;color:#666666;font-size:13px;">Loading chart...</div>', unsafe_allow_html=True)
+    st.markdown('<div style="height:180px;display:flex;align-items:center;justify-content:center;color:#35322d;font-size:12px;">Loading chart...</div>', unsafe_allow_html=True)
 
-st.markdown('<div style="height:12px;"></div>', unsafe_allow_html=True)
-
-# ========== STAT CARDS — Robinhood style ==========
-# Robinhood: 5 stat cards in a row, 242424 bg, rgba border
-stat_cols = st.columns(5)
-stats = [
-    ("CASH", f"${cash:,.2f}"),
-    ("INVESTED", f"${positions_value:,.2f}"),
-    ("P&L", f"${total_pl:+,.2f}"),
-    ("BUYING POWER", f"${buying_power:,.2f}"),
-    ("POSITIONS", str(len(positions))),
+# ========== STAT CARDS ==========
+stat_labels = ["CASH", "INVESTED", "P&L", "BUYING POWER", "POSITIONS"]
+stat_vals = [
+    f"${cash:,.2f}",
+    f"${positions_value:,.2f}",
+    f"${total_pl:+,.2f}",
+    f"${buying_power:,.2f}",
+    str(len(positions)),
 ]
-for col, (label, val) in zip(stat_cols, stats):
-    with col:
-        st.markdown(f"""
-        <div class="rh-stat">
-            <div class="rh-stat-label">{label}</div>
-            <div class="rh-stat-val">{val}</div>
-        </div>
-        """, unsafe_allow_html=True)
+stat_html = '<div class="rh-stats">'
+for label, val in zip(stat_labels, stat_vals):
+    stat_html += f'<div class="rh-stat"><div class="rh-stat-label">{label}</div><div class="rh-stat-val">{val}</div></div>'
+stat_html += '</div>'
+st.markdown(stat_html, unsafe_allow_html=True)
 
-st.markdown('<div style="height:16px;"></div>', unsafe_allow_html=True)
-
-# ========== POSITIONS — Robinhood pixel-perfect rows ==========
+# ========== POSITIONS ==========
 if positions:
+    st.markdown('<div style="height:8px;"></div>', unsafe_allow_html=True)
     st.markdown('<div class="rh-section">Positions</div>', unsafe_allow_html=True)
 
-    # Sector colors (Robinhood uses unique colors per company)
     sector_colors = {
         "tech": ("rgba(88,166,255,0.15)", "#58A6FF"),
         "health": ("rgba(139,92,246,0.15)", "#8B5CF6"),
@@ -467,7 +448,7 @@ if positions:
         "industrial": ("rgba(245,158,11,0.15)", "#F59E0B"),
         "telecom": ("rgba(6,182,212,0.15)", "#06B6D4"),
         "finance": ("rgba(34,197,94,0.15)", "#22C55E"),
-        "other": ("rgba(170,170,170,0.15)", "#AAAAAA"),
+        "other": ("rgba(77,74,70,0.25)", "#4d4a46"),
     }
     sector_map = {
         "AAPL":"tech","MSFT":"tech","NVDA":"tech","AMZN":"tech","GOOGL":"tech",
@@ -488,11 +469,11 @@ if positions:
 
     sorted_pos = sorted(positions, key=lambda p: abs(float(p.market_value)), reverse=True)
 
+    pos_html = ""
     for p in sorted_pos:
         sym = p.symbol
         pl = float(p.unrealized_pl)
         plpc = float(p.unrealized_plpc) * 100
-        entry = float(p.avg_entry_price)
         qty = float(p.qty)
         value = float(p.market_value)
         sector = sector_map.get(sym, "other")
@@ -501,7 +482,7 @@ if positions:
         pl_sign = "+" if pl >= 0 else ""
         pl_cls = "up" if pl >= 0 else "down"
 
-        st.markdown(f"""
+        pos_html += f"""
         <div class="rh-pos">
             <div class="rh-pos-left">
                 <div class="rh-icon" style="background:{bg};color:{fg};">{sym[:2]}</div>
@@ -515,10 +496,11 @@ if positions:
                 <div class="rh-pos-pl {pl_cls}">{pl_sign}${abs(pl):,.2f} ({pl_sign}{plpc:.2f}%)</div>
             </div>
         </div>
-        """, unsafe_allow_html=True)
+        """
+    st.markdown(pos_html, unsafe_allow_html=True)
 
-    # ========== CHART vs SPY ==========
-    st.markdown('<div style="height:16px;"></div>', unsafe_allow_html=True)
+    # ========== VS SPY CHART ==========
+    st.markdown('<div style="height:12px;"></div>', unsafe_allow_html=True)
     st.markdown('<div class="rh-section">vs SPY</div>', unsafe_allow_html=True)
 
     try:
@@ -546,28 +528,28 @@ if positions:
                 ))
             fig2.add_trace(go.Scatter(
                 x=spy_dates, y=spy_pct, name="SPY",
-                line=dict(color="#58A6FF", width=2, shape="spline", dash="dot"),
+                line=dict(color="#58A6FF", width=1.5, shape="spline", dash="dot"),
                 hovertemplate="%{y:+.2f}%<extra>SPY</extra>",
             ))
             fig2.update_layout(
                 paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
-                font=dict(color="#AAAAAA", size=11),
-                margin=dict(l=0, r=0, t=10, b=0),
-                height=220,
+                font=dict(color="#4d4a46", size=11, family="Inter"),
+                margin=dict(l=0, r=0, t=8, b=0),
+                height=200,
                 xaxis=dict(showgrid=False, zeroline=False, showline=False,
-                           tickformat="%b %d", nticks=6,
-                           tickfont=dict(size=11, color="#666666")),
+                           tickformat="%b %d", nticks=5,
+                           tickfont=dict(size=10, color="#35322d")),
                 yaxis=dict(showgrid=False, zeroline=False, showline=False,
                            tickformat="+.1f%%", nticks=5, side="right",
-                           tickfont=dict(size=11, color="#666666")),
+                           tickfont=dict(size=10, color="#35322d")),
                 legend=dict(
                     orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1,
-                    font=dict(size=12, color="#AAAAAA"),
+                    font=dict(size=11, color="#4d4a46"),
                     bgcolor="rgba(0,0,0,0)", borderwidth=0,
                 ),
                 hovermode="x unified",
-                hoverlabel=dict(bgcolor="#242424", bordercolor="#3A3A3A",
-                                font=dict(size=13, color="#F5F5F5", family="Inter")),
+                hoverlabel=dict(bgcolor="#1c180d", bordercolor="#35322d",
+                                font=dict(size=12, color="#FFFFFF", family="Inter")),
             )
             st.plotly_chart(fig2, use_container_width=True)
     except Exception:
@@ -575,14 +557,13 @@ if positions:
 
 else:
     st.markdown("""
-    <div style="text-align:center;padding:48px 24px;">
-        <div style="font-size:16px;font-weight:600;color:#F5F5F5;margin-bottom:8px;">No positions yet</div>
-        <div style="font-size:14px;color:#AAAAAA;">The bot scans 280+ Sharia-compliant stocks every 10 minutes.</div>
+    <div style="text-align:center;padding:40px 24px;">
+        <div style="font-size:15px;font-weight:600;color:#FFFFFF;margin-bottom:6px;">No positions yet</div>
+        <div style="font-size:13px;color:#4d4a46;">The bot scans 280+ Sharia-compliant stocks every 10 minutes.</div>
     </div>
     """, unsafe_allow_html=True)
 
 # ========== CASH ROW ==========
-st.markdown('<div style="height:12px;"></div>', unsafe_allow_html=True)
 st.markdown(f"""
 <div class="rh-cash">
     <div>
@@ -601,4 +582,4 @@ st.markdown(f"""
 <div class="rh-footer">
     Last updated: {datetime.now().strftime('%I:%M %p ET')} &bull; Paper Trading
 </div>
-""", unsafe_allow_html=True)
+""")
