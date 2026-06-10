@@ -1,0 +1,7 @@
+.env
+__pycache__/
+*.pyc
+data/portfolio.db
+data/halal_stocks.json
+logs/
+*.log
