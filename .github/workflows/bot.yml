@@ -1,7 +1,6 @@
 name: Halal Trading Bot
 
 on:
-  schedule:
   push:
     branches: [main]
   schedule:
