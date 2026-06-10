@@ -6,6 +6,7 @@ from alpaca.data.historical.stock import StockHistoricalDataClient
 from alpaca.data.requests import StockBarsRequest
 from alpaca.data.timeframe import TimeFrame
 import plotly.graph_objects as go
+from database import get_performance_stats, get_recent_closed_trades, get_streak, get_best_worst_trade, get_trade_count_today
 
 st.set_page_config(page_title="Trading Bot", layout="wide", initial_sidebar_state="collapsed")
 
@@ -16,7 +17,6 @@ st.markdown("""
     * {
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
         -webkit-font-smoothing: antialiased !important;
-        -moz-osx-font-smoothing: grayscale !important;
     }
 
     #MainMenu, footer, header[data-testid="stHeader"],
@@ -38,149 +38,119 @@ st.markdown("""
 
     ::-webkit-scrollbar { width: 0; height: 0; }
 
-    /* ===== HERO ===== */
     .rh-hero-value {
-        font-size: 34px;
-        font-weight: 700;
-        letter-spacing: -0.03em;
-        line-height: 1.0;
-        color: #FFFFFF;
-        margin: 0;
+        font-size: 34px; font-weight: 700; letter-spacing: -0.03em;
+        line-height: 1.0; color: #FFF; margin: 0;
     }
-    .rh-change {
-        font-size: 15px;
-        font-weight: 500;
-        line-height: 1.4;
-        margin: 4px 0 0 0;
-    }
+    .rh-change { font-size: 15px; font-weight: 500; margin: 4px 0 0 0; }
     .rh-change.up { color: #00D64F; }
     .rh-change.down { color: #FF5000; }
 
-    /* ===== MARKET STATUS ===== */
     .rh-status {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        font-size: 10px;
-        font-weight: 700;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
+        display: inline-flex; align-items: center; gap: 6px;
+        font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
     }
-    .rh-dot {
-        width: 6px; height: 6px; border-radius: 50%;
-    }
+    .rh-dot { width: 6px; height: 6px; border-radius: 50%; }
     .rh-dot.open { background: #00D64F; animation: rhPulse 2s infinite; }
     .rh-dot.closed { background: #FF5000; }
-    @keyframes rhPulse {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.3; }
+    @keyframes rhPulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    .rh-section {
+        font-size: 11px; font-weight: 700; text-transform: uppercase;
+        letter-spacing: 0.06em; color: #555; padding: 14px 0 8px 0;
+        border-bottom: 1px solid #1A1A1A;
     }
 
-    /* ===== STAT ROW ===== */
-    .rh-stats {
-        display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        gap: 1px;
-        background: #1A1A1A;
-        border: 1px solid #1A1A1A;
+    /* ===== STAT PILLS ===== */
+    .rh-pills {
+        display: grid; grid-template-columns: repeat(5, 1fr);
+        gap: 1px; background: #1A1A1A; border: 1px solid #1A1A1A;
         margin: 16px 0 8px 0;
     }
-    .rh-stat {
-        background: #0A0A0A;
-        padding: 14px 8px;
-        text-align: center;
+    .rh-pill { background: #0A0A0A; padding: 12px 6px; text-align: center; }
+    .rh-pill-label {
+        font-size: 9px; font-weight: 700; text-transform: uppercase;
+        letter-spacing: 0.08em; color: #555; margin-bottom: 4px;
     }
-    .rh-stat-label {
-        font-size: 9px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: #555;
-        margin-bottom: 4px;
-    }
-    .rh-stat-val {
-        font-size: 13px;
-        font-weight: 700;
-        color: #FFFFFF;
+    .rh-pill-val {
+        font-size: 13px; font-weight: 700; color: #FFF;
         font-feature-settings: 'tnum';
-    }
-
-    /* ===== SECTION ===== */
-    .rh-section {
-        font-size: 11px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        color: #555;
-        padding: 12px 0 8px 0;
-        border-bottom: 1px solid #1A1A1A;
     }
 
     /* ===== POSITION ROW ===== */
     .rh-pos {
-        display: flex;
-        align-items: center;
-        height: 68px;
-        padding: 0 4px;
-        border-bottom: 1px solid #111;
+        display: flex; align-items: center; height: 68px;
+        padding: 0 4px; border-bottom: 1px solid #111;
         transition: background 100ms;
     }
     .rh-pos:active { background: rgba(255,255,255,0.03); }
-    .rh-pos-left {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        flex: 1;
-        min-width: 0;
-    }
+    .rh-pos-left { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
     .rh-icon {
         width: 36px; height: 36px; border-radius: 18px;
         display: flex; align-items: center; justify-content: center;
         font-weight: 700; font-size: 12px; flex-shrink: 0;
     }
-    .rh-ticker {
-        font-size: 16px; font-weight: 600; color: #FFFFFF;
-        letter-spacing: -0.01em;
-    }
-    .rh-sub {
-        font-size: 13px; color: #555; margin-top: 1px;
-    }
+    .rh-ticker { font-size: 16px; font-weight: 600; color: #FFF; letter-spacing: -0.01em; }
+    .rh-sub { font-size: 13px; color: #555; margin-top: 1px; }
     .rh-pos-right { text-align: right; flex-shrink: 0; }
-    .rh-pos-val {
-        font-size: 16px; font-weight: 600; color: #FFFFFF;
-        font-feature-settings: 'tnum';
-    }
-    .rh-pos-pl {
-        font-size: 13px; font-weight: 400;
-        font-feature-settings: 'tnum'; margin-top: 1px;
-    }
+    .rh-pos-val { font-size: 16px; font-weight: 600; color: #FFF; font-feature-settings: 'tnum'; }
+    .rh-pos-pl { font-size: 13px; font-feature-settings: 'tnum'; margin-top: 1px; }
     .rh-pos-pl.up { color: #00D64F; }
     .rh-pos-pl.down { color: #FF5000; }
+
+    /* ===== TRADE CARD ===== */
+    .rh-trade {
+        display: flex; align-items: center; height: 56px;
+        padding: 0 4px; border-bottom: 1px solid #111;
+    }
+    .rh-trade-icon {
+        width: 32px; height: 32px; border-radius: 16px;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 700; font-size: 10px; flex-shrink: 0; margin-right: 12px;
+    }
+    .rh-trade-left { flex: 1; }
+    .rh-trade-ticker { font-size: 14px; font-weight: 600; color: #FFF; }
+    .rh-trade-sub { font-size: 11px; color: #555; }
+    .rh-trade-right { text-align: right; }
+    .rh-trade-pnl { font-size: 14px; font-weight: 600; font-feature-settings: 'tnum'; }
+    .rh-trade-pnl.up { color: #00D64F; }
+    .rh-trade-pnl.down { color: #FF5000; }
+    .rh-trade-date { font-size: 10px; color: #555; }
+
+    /* ===== GOAL BAR ===== */
+    .rh-goal { margin: 12px 0; }
+    .rh-goal-header { display: flex; justify-content: space-between; margin-bottom: 6px; }
+    .rh-goal-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #555; }
+    .rh-goal-pct { font-size: 11px; font-weight: 700; color: #00D64F; }
+    .rh-goal-track { height: 4px; background: #1A1A1A; border-radius: 2px; overflow: hidden; }
+    .rh-goal-fill { height: 100%; background: #00D64F; border-radius: 2px; transition: width 0.5s; }
+
+    /* ===== STREAK ===== */
+    .rh-streak {
+        display: flex; align-items: center; gap: 8px;
+        padding: 10px 12px; background: #0A0A0A; border: 1px solid #1A1A1A;
+        margin: 8px 0;
+    }
+    .rh-streak-num { font-size: 24px; font-weight: 800; color: #FF6B00; }
+    .rh-streak-text { font-size: 12px; color: #555; line-height: 1.3; }
+    .rh-streak-text b { color: #FFF; }
 
     /* ===== CASH BAR ===== */
     .rh-cash {
         display: flex; justify-content: space-between; align-items: center;
-        padding: 14px 12px;
-        background: #0A0A0A;
-        border: 1px solid #1A1A1A;
-        margin: 12px 0;
+        padding: 14px 12px; background: #0A0A0A; border: 1px solid #1A1A1A; margin: 12px 0;
     }
 
-    /* ===== FOOTER ===== */
     .rh-footer {
         text-align: center; font-size: 10px; color: #333;
-        letter-spacing: 0.05em; text-transform: uppercase;
-        padding: 24px 0 12px 0;
+        letter-spacing: 0.05em; text-transform: uppercase; padding: 24px 0 12px 0;
     }
 
-    /* ===== HIDE PLOTLY TOOLBAR ===== */
     .modebar { display: none !important; }
 
-    /* ===== MOBILE TWEAKS ===== */
     @media (max-width: 480px) {
         .block-container { padding-left: 12px !important; padding-right: 12px !important; }
         .rh-hero-value { font-size: 32px; }
-        .rh-stat-val { font-size: 12px; }
     }
 </style>
 """, unsafe_allow_html=True)
@@ -233,7 +203,7 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# ========== CHART — mobile sparkline, no axes ==========
+# ========== CHART ==========
 chart_dates = []
 chart_values = []
 
@@ -270,51 +240,78 @@ if chart_dates and chart_values and len(chart_dates) > 1:
 
     fig = go.Figure()
     fig.add_trace(go.Scatter(
-        x=chart_dates,
-        y=chart_values,
-        mode="lines",
+        x=chart_dates, y=chart_values, mode="lines",
         line=dict(color=line_color, width=2.5, shape="spline"),
-        fill="tozeroy",
-        fillcolor=f"rgba({r},{g},{b},0.08)",
-        hoverinfo="x+y",
-        showlegend=False,
+        fill="tozeroy", fillcolor=f"rgba({r},{g},{b},0.08)",
+        hoverinfo="x+y", showlegend=False,
     ))
     fig.update_layout(
-        height=220,
-        margin=dict(l=0, r=0, t=0, b=0),
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)",
+        height=220, margin=dict(l=0, r=0, t=0, b=0),
+        paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
         xaxis=dict(visible=False, fixedrange=True),
         yaxis=dict(visible=False, fixedrange=False),
         hovermode="x unified",
-        hoverlabel=dict(
-            bgcolor="#1A1A1A", bordercolor="#333",
-            font=dict(size=13, color="#FFF", family="Inter"),
-        ),
+        hoverlabel=dict(bgcolor="#1A1A1A", bordercolor="#333",
+                        font=dict(size=13, color="#FFF", family="Inter")),
         dragmode=False,
     )
     st.plotly_chart(fig, use_container_width=True, config={
-        "responsive": True,
-        "displayModeBar": False,
-        "displaylogo": False,
-        "scrollZoom": False,
-        "staticPlot": False,
+        "responsive": True, "displayModeBar": False, "displaylogo": False,
+        "scrollZoom": False, "staticPlot": False,
     })
 else:
     st.markdown('<div style="height:220px;"></div>', unsafe_allow_html=True)
 
-# ========== STAT CARDS ==========
-stat_html = '<div class="rh-stats">'
+# ========== STAT PILLS ==========
+perf = get_performance_stats()
+streak = get_streak()
+trades_today = get_trade_count_today()
+
+stat_html = '<div class="rh-pills">'
 for label, val in [
     ("CASH", f"${cash:,.0f}"),
     ("INVESTED", f"${positions_value:,.0f}"),
     ("P&L", f"${total_pl:+,.0f}"),
-    ("POWER", f"${buying_power:,.0f}"),
-    ("POS", str(len(positions))),
+    ("WIN RATE", f"{perf['win_rate']}%" if perf['total_trades'] > 0 else "--"),
+    ("TRADES", str(perf['total_trades'])),
 ]:
-    stat_html += f'<div class="rh-stat"><div class="rh-stat-label">{label}</div><div class="rh-stat-val">{val}</div></div>'
+    stat_html += f'<div class="rh-pill"><div class="rh-pill-label">{label}</div><div class="rh-pill-val">{val}</div></div>'
 stat_html += '</div>'
 st.markdown(stat_html, unsafe_allow_html=True)
+
+# ========== STREAK + GOAL ==========
+col1, col2 = st.columns([1, 2])
+
+with col1:
+    if streak > 0:
+        st.markdown(f"""
+        <div class="rh-streak">
+            <div class="rh-streak-num">{streak}</div>
+            <div class="rh-streak-text"><b>day streak</b><br>{trades_today} trades today</div>
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.markdown(f"""
+        <div class="rh-streak">
+            <div class="rh-streak-num" style="color:#555;">0</div>
+            <div class="rh-streak-text"><b>no streak yet</b><br>{trades_today} trades today</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+with col2:
+    goal_target = 15000
+    goal_pct = min((equity / goal_target) * 100, 100)
+    st.markdown(f"""
+    <div class="rh-goal" style="margin-top:10px;">
+        <div class="rh-goal-header">
+            <span class="rh-goal-label">Goal: $15,000</span>
+            <span class="rh-goal-pct">{goal_pct:.1f}%</span>
+        </div>
+        <div class="rh-goal-track">
+            <div class="rh-goal-fill" style="width:{goal_pct}%;"></div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
 # ========== POSITIONS ==========
 if positions:
@@ -377,7 +374,7 @@ if positions:
         """
     st.markdown(pos_html, unsafe_allow_html=True)
 
-    # ========== VS SPY — simple two-line chart, no axes ==========
+    # ========== VS SPY ==========
     st.markdown('<div style="height:8px;"></div>', unsafe_allow_html=True)
     st.markdown('<div class="rh-section">vs SPY</div>', unsafe_allow_html=True)
 
@@ -410,30 +407,20 @@ if positions:
                 hoverinfo="name+y",
             ))
             fig2.update_layout(
-                height=180,
-                margin=dict(l=0, r=0, t=0, b=0),
-                paper_bgcolor="rgba(0,0,0,0)",
-                plot_bgcolor="rgba(0,0,0,0)",
+                height=180, margin=dict(l=0, r=0, t=0, b=0),
+                paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
                 xaxis=dict(visible=False, fixedrange=True),
                 yaxis=dict(visible=False, fixedrange=True),
                 hovermode="x unified",
-                hoverlabel=dict(
-                    bgcolor="#1A1A1A", bordercolor="#333",
-                    font=dict(size=12, color="#FFF", family="Inter"),
-                ),
+                hoverlabel=dict(bgcolor="#1A1A1A", bordercolor="#333",
+                                font=dict(size=12, color="#FFF", family="Inter")),
                 showlegend=True,
-                legend=dict(
-                    orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1,
-                    font=dict(size=11, color="#555"),
-                    bgcolor="rgba(0,0,0,0)", borderwidth=0,
-                ),
+                legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1,
+                            font=dict(size=11, color="#555"), bgcolor="rgba(0,0,0,0)", borderwidth=0),
                 dragmode=False,
             )
             st.plotly_chart(fig2, use_container_width=True, config={
-                "responsive": True,
-                "displayModeBar": False,
-                "displaylogo": False,
-                "scrollZoom": False,
+                "responsive": True, "displayModeBar": False, "displaylogo": False,
             })
     except Exception:
         pass
@@ -446,16 +433,78 @@ else:
     </div>
     """, unsafe_allow_html=True)
 
+# ========== RECENT TRADES ==========
+recent = get_recent_closed_trades(5)
+if recent:
+    st.markdown('<div class="rh-section">Recent Trades</div>', unsafe_allow_html=True)
+
+    trades_html = ""
+    for t in recent:
+        sym = t["symbol"]
+        pnl = t.get("pnl") or 0
+        entry = t.get("avg_entry_price") or 0
+        exit_p = t.get("exit_price") or 0
+        closed = t.get("closed_at", "")
+        pl_sign = "+" if pnl >= 0 else ""
+        pl_cls = "up" if pnl >= 0 else "down"
+
+        try:
+            dt = datetime.fromisoformat(closed)
+            date_str = dt.strftime("%b %d")
+        except Exception:
+            date_str = ""
+
+        trades_html += f"""
+        <div class="rh-trade">
+            <div class="rh-trade-icon" style="background:rgba(0,214,79,0.1);color:#00D64F;">{sym[:2]}</div>
+            <div class="rh-trade-left">
+                <div class="rh-trade-ticker">{sym}</div>
+                <div class="rh-trade-sub">${entry:.2f} → ${exit_p:.2f}</div>
+            </div>
+            <div class="rh-trade-right">
+                <div class="rh-trade-pnl {pl_cls}">{pl_sign}${pnl:,.2f}</div>
+                <div class="rh-trade-date">{date_str}</div>
+            </div>
+        </div>
+        """
+    st.markdown(trades_html, unsafe_allow_html=True)
+
+# ========== PERFORMANCE ==========
+if perf["total_trades"] > 0:
+    st.markdown('<div class="rh-section">Performance</div>', unsafe_allow_html=True)
+
+    best, worst = get_best_worst_trade()
+    best_text = f"{best['symbol']} +${best['pnl']:,.2f}" if best else "--"
+    worst_text = f"{worst['symbol']} ${worst['pnl']:,.2f}" if worst else "--"
+
+    perf_html = f"""
+    <div class="rh-pills" style="grid-template-columns: repeat(3, 1fr);">
+        <div class="rh-pill">
+            <div class="rh-pill-label">PROFIT FACTOR</div>
+            <div class="rh-pill-val">{perf['profit_factor']}</div>
+        </div>
+        <div class="rh-pill">
+            <div class="rh-pill-label">BEST TRADE</div>
+            <div class="rh-pill-val" style="color:#00D64F;font-size:11px;">{best_text}</div>
+        </div>
+        <div class="rh-pill">
+            <div class="rh-pill-label">WORST TRADE</div>
+            <div class="rh-pill-val" style="color:#FF5000;font-size:11px;">{worst_text}</div>
+        </div>
+    </div>
+    """
+    st.markdown(perf_html, unsafe_allow_html=True)
+
 # ========== CASH ==========
 st.markdown(f"""
 <div class="rh-cash">
     <div>
-        <div class="rh-stat-label">CASH</div>
-        <div class="rh-stat-val" style="font-size:15px;">${cash:,.2f}</div>
+        <div class="rh-pill-label">CASH</div>
+        <div class="rh-pill-val" style="font-size:15px;">${cash:,.2f}</div>
     </div>
     <div style="text-align:right;">
-        <div class="rh-stat-label">BUYING POWER</div>
-        <div class="rh-stat-val" style="font-size:15px;">${buying_power:,.2f}</div>
+        <div class="rh-pill-label">BUYING POWER</div>
+        <div class="rh-pill-val" style="font-size:15px;">${buying_power:,.2f}</div>
     </div>
 </div>
 """, unsafe_allow_html=True)

@@ -171,6 +171,67 @@ def get_performance_stats():
     }
 
 
+def get_recent_closed_trades(limit=5):
+    conn = get_db()
+    c = conn.cursor()
+    c.execute(
+        "SELECT symbol, qty, avg_entry_price, exit_price, pnl, exit_reason, opened_at, closed_at "
+        "FROM positions WHERE closed_at IS NOT NULL ORDER BY closed_at DESC LIMIT ?",
+        (limit,)
+    )
+    rows = [dict(r) for r in c.fetchall()]
+    conn.close()
+    return rows
+
+
+def get_trade_count_today():
+    conn = get_db()
+    c = conn.cursor()
+    today = datetime.now().strftime("%Y-%m-%d")
+    c.execute("SELECT COUNT(*) as cnt FROM trades WHERE DATE(timestamp) = ?", (today,))
+    row = c.fetchone()
+    conn.close()
+    return row["cnt"] if row else 0
+
+
+def get_streak():
+    conn = get_db()
+    c = conn.cursor()
+    c.execute("SELECT DISTINCT DATE(timestamp) as day FROM trades ORDER BY day DESC")
+    days = [r["day"] for r in c.fetchall()]
+    conn.close()
+
+    if not days:
+        return 0
+
+    from datetime import date, timedelta
+    streak = 0
+    today = date.today()
+
+    for d in days:
+        trade_date = date.fromisoformat(d)
+        if trade_date == today - timedelta(days=streak):
+            streak += 1
+        elif trade_date == today - timedelta(days=streak - 1) and streak > 0:
+            continue
+        else:
+            break
+
+    return streak
+
+
+def get_best_worst_trade():
+    conn = get_db()
+    c = conn.cursor()
+    c.execute("SELECT symbol, pnl FROM positions WHERE closed_at IS NOT NULL ORDER BY pnl DESC")
+    rows = [dict(r) for r in c.fetchall()]
+    conn.close()
+
+    if not rows:
+        return None, None
+    return rows[0], rows[-1]
+
+
 if __name__ == "__main__":
     init_db()
     print("Database initialized")
