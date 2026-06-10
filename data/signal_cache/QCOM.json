@@ -1,1 +1,0 @@
-{"ts": 1781119716.1092079, "result": {"ticker": "QCOM", "signal": "HOLD", "reasons": [], "indicators": {"price": 191.56, "rsi": 22.91, "macd": -9.574, "macd_signal": -9.1209, "macd_hist": -0.4531, "atr": 5.99, "sma_200": 214.5, "sma_fast": 205.26, "sma_slow": 224.83, "volume": 1364431, "volume_sma": 2665649}, "stop_price": 179.58, "stop_pct": 6.25}}

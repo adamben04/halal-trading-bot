@@ -1,1 +1,0 @@
-{"ts": 1781119736.6157825, "result": {"ticker": "LITE", "signal": "HOLD", "reasons": [], "indicators": {"price": 855.15, "rsi": 44.4, "macd": -13.387, "macd_signal": -18.4494, "macd_hist": 5.0624, "atr": 32.07, "sma_200": 927.36, "sma_fast": 856.94, "sma_slow": 908.85, "volume": 490944, "volume_sma": 858167}, "stop_price": 791.01, "stop_pct": 7.5}}

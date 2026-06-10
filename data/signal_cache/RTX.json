@@ -1,1 +1,0 @@
-{"ts": 1781119726.716662, "result": {"ticker": "RTX", "signal": "HOLD", "reasons": [], "indicators": {"price": 177.41, "rsi": 41.72, "macd": 0.0328, "macd_signal": 0.4344, "macd_hist": -0.4016, "atr": 1.56, "sma_200": 176.71, "sma_fast": 179.82, "sma_slow": 178.22, "volume": 404236, "volume_sma": 572075}, "stop_price": 174.29, "stop_pct": 1.76}}

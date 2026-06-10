@@ -1,1 +1,0 @@
-{"ts": 1781119742.9263294, "result": {"ticker": "AAL", "signal": "HOLD", "reasons": [], "indicators": {"price": 13.38, "rsi": 42.3, "macd": -0.0527, "macd_signal": 0.0115, "macd_hist": -0.0642, "atr": 0.3, "sma_200": 13.25, "sma_fast": 13.77, "sma_slow": 13.7, "volume": 21696036, "volume_sma": 18657615}, "stop_price": 12.78, "stop_pct": 4.48}}

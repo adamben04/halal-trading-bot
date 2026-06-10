@@ -1,1 +1,0 @@
-{"ts": 1781119746.7359416, "result": {"ticker": "SQM", "signal": "HOLD", "reasons": [], "indicators": {"price": 73.99, "rsi": 58.89, "macd": -0.655, "macd_signal": -0.8733, "macd_hist": 0.2183, "atr": 1.14, "sma_200": 84.62, "sma_fast": 74.03, "sma_slow": 76.88, "volume": 106384, "volume_sma": 162111}, "stop_price": 71.71, "stop_pct": 3.08}}

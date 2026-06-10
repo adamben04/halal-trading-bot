@@ -1,1 +1,0 @@
-{"ts": 1781119729.994353, "result": {"ticker": "NFLX", "signal": "HOLD", "reasons": [], "indicators": {"price": 81.84, "rsi": 41.15, "macd": -0.0962, "macd_signal": -0.1677, "macd_hist": 0.0715, "atr": 0.64, "sma_200": 86.88, "sma_fast": 82.11, "sma_slow": 82.34, "volume": 5457681, "volume_sma": 4040074}, "stop_price": 80.56, "stop_pct": 1.56}}

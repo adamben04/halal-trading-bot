@@ -1,1 +1,0 @@
-{"ts": 1781119714.9847827, "result": {"ticker": "META", "signal": "HOLD", "reasons": [], "indicators": {"price": 571.21, "rsi": 30.24, "macd": -8.1059, "macd_signal": -7.5238, "macd_hist": -0.5821, "atr": 6.23, "sma_200": 609.57, "sma_fast": 584.66, "sma_slow": 601.93, "volume": 2404404, "volume_sma": 1668986}, "stop_price": 558.75, "stop_pct": 2.18}}

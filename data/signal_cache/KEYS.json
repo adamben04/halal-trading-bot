@@ -1,1 +1,0 @@
-{"ts": 1781119734.062364, "result": {"ticker": "KEYS", "signal": "SELL", "reasons": ["MACD bearish cross below 200 SMA"], "indicators": {"price": 323.57, "rsi": 42.07, "macd": -2.9021, "macd_signal": -2.8956, "macd_hist": -0.0064, "atr": 5.99, "sma_200": 346.5, "sma_fast": 328.69, "sma_slow": 336.94, "volume": 121890, "volume_sma": 146212}, "stop_price": 311.59, "stop_pct": 3.7}}

@@ -1,1 +1,0 @@
-{"ts": 1781119746.3920827, "result": {"ticker": "SCCO", "signal": "HOLD", "reasons": [], "indicators": {"price": 166.6, "rsi": 44.58, "macd": -4.0033, "macd_signal": -4.1362, "macd_hist": 0.1329, "atr": 3.74, "sma_200": 181.23, "sma_fast": 171.3, "sma_slow": 183.69, "volume": 151090, "volume_sma": 190652}, "stop_price": 159.12, "stop_pct": 4.49}}

@@ -1,1 +1,0 @@
-{"ts": 1781119714.7348213, "result": {"ticker": "AMZN", "signal": "HOLD", "reasons": [], "indicators": {"price": 237.72, "rsi": 31.02, "macd": -3.3703, "macd_signal": -3.1265, "macd_hist": -0.2437, "atr": 2.85, "sma_200": 263.52, "sma_fast": 243.25, "sma_slow": 249.63, "volume": 3152118, "volume_sma": 4409190}, "stop_price": 232.02, "stop_pct": 2.4}}

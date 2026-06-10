@@ -1,1 +1,0 @@
-{"ts": 1781119717.6600506, "result": {"ticker": "CDNS", "signal": "HOLD", "reasons": [], "indicators": {"price": 383.15, "rsi": 39.32, "macd": -2.5005, "macd_signal": -2.1917, "macd_hist": -0.3089, "atr": 7.42, "sma_200": 368.45, "sma_fast": 390.14, "sma_slow": 397.99, "volume": 159642, "volume_sma": 231107}, "stop_price": 368.31, "stop_pct": 3.87}}

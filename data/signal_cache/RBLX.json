@@ -1,1 +1,0 @@
-{"ts": 1781119732.2201467, "result": {"ticker": "RBLX", "signal": "HOLD", "reasons": [], "indicators": {"price": 41.58, "rsi": 41.62, "macd": -0.2954, "macd_signal": -0.2264, "macd_hist": -0.069, "atr": 0.8, "sma_200": 44.82, "sma_fast": 42.62, "sma_slow": 43.21, "volume": 868741, "volume_sma": 1410320}, "stop_price": 39.98, "stop_pct": 3.85}}

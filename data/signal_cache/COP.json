@@ -1,1 +1,0 @@
-{"ts": 1781119729.2658982, "result": {"ticker": "COP", "signal": "HOLD", "reasons": [], "indicators": {"price": 120.69, "rsi": 58.51, "macd": 0.6773, "macd_signal": 0.252, "macd_hist": 0.4253, "atr": 1.17, "sma_200": 119.14, "sma_fast": 118.44, "sma_slow": 118.16, "volume": 526892, "volume_sma": 607611}, "stop_price": 118.35, "stop_pct": 1.94}}

@@ -1,1 +1,0 @@
-{"ts": 1781119740.7957268, "result": {"ticker": "DRI", "signal": "HOLD", "reasons": [], "indicators": {"price": 205.16, "rsi": 74.92, "macd": 1.9482, "macd_signal": 1.2587, "macd_hist": 0.6895, "atr": 2.05, "sma_200": 198.21, "sma_fast": 200.0, "sma_slow": 198.48, "volume": 168784, "volume_sma": 104603}, "stop_price": 201.06, "stop_pct": 2.0}}

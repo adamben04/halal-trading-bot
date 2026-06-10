@@ -1,1 +1,0 @@
-{"ts": 1781119717.7622151, "result": {"ticker": "PANW", "signal": "HOLD", "reasons": [], "indicators": {"price": 262.29, "rsi": 44.71, "macd": -2.6962, "macd_signal": -3.5651, "macd_hist": 0.869, "atr": 4.3, "sma_200": 239.65, "sma_fast": 263.32, "sma_slow": 274.8, "volume": 551178, "volume_sma": 770560}, "stop_price": 253.69, "stop_pct": 3.28}}

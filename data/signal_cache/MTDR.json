@@ -1,1 +1,0 @@
-{"ts": 1781119745.778442, "result": {"ticker": "MTDR", "signal": "HOLD", "reasons": [], "indicators": {"price": 55.58, "rsi": 51.79, "macd": 0.0684, "macd_signal": -0.1689, "macd_hist": 0.2373, "atr": 0.7, "sma_200": 57.27, "sma_fast": 54.66, "sma_slow": 55.3, "volume": 183544, "volume_sma": 151863}, "stop_price": 54.18, "stop_pct": 2.52}}

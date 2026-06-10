@@ -1,1 +1,0 @@
-{"ts": 1781119737.1740882, "result": {"ticker": "POOL", "signal": "HOLD", "reasons": [], "indicators": {"price": 190.04, "rsi": 72.12, "macd": 2.5118, "macd_signal": 2.5856, "macd_hist": -0.0738, "atr": 2.96, "sma_200": 185.9, "sma_fast": 188.79, "sma_slow": 184.66, "volume": 91137, "volume_sma": 149238}, "stop_price": 184.12, "stop_pct": 3.12}}

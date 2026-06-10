@@ -1,1 +1,0 @@
-{"ts": 1781119743.2565703, "result": {"ticker": "SKYW", "signal": "HOLD", "reasons": [], "indicators": {"price": 85.18, "rsi": 52.12, "macd": 0.539, "macd_signal": 0.7597, "macd_hist": -0.2207, "atr": 1.42, "sma_200": 84.27, "sma_fast": 85.68, "sma_slow": 83.68, "volume": 34021, "volume_sma": 46885}, "stop_price": 82.34, "stop_pct": 3.33}}

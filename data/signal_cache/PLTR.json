@@ -1,1 +1,0 @@
-{"ts": 1781119716.5900986, "result": {"ticker": "PLTR", "signal": "HOLD", "reasons": [], "indicators": {"price": 129.99, "rsi": 29.0, "macd": -2.3612, "macd_signal": -2.6239, "macd_hist": 0.2627, "atr": 2.09, "sma_200": 138.71, "sma_fast": 133.15, "sma_slow": 140.02, "volume": 2535487, "volume_sma": 3686916}, "stop_price": 125.81, "stop_pct": 3.22}}

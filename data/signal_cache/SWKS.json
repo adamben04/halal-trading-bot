@@ -1,1 +1,0 @@
-{"ts": 1781119720.2984815, "result": {"ticker": "SWKS", "signal": "HOLD", "reasons": [], "indicators": {"price": 70.8, "rsi": 28.56, "macd": -1.6473, "macd_signal": -1.511, "macd_hist": -0.1363, "atr": 1.91, "sma_200": 72.91, "sma_fast": 73.87, "sma_slow": 76.68, "volume": 348022, "volume_sma": 554573}, "stop_price": 66.98, "stop_pct": 5.4}}

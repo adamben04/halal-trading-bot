@@ -1,1 +1,0 @@
-{"ts": 1781119745.222364, "result": {"ticker": "RRC", "signal": "HOLD", "reasons": [], "indicators": {"price": 39.32, "rsi": 54.16, "macd": -0.0582, "macd_signal": -0.1824, "macd_hist": 0.1242, "atr": 0.37, "sma_200": 40.88, "sma_fast": 38.97, "sma_slow": 39.49, "volume": 321133, "volume_sma": 291589}, "stop_price": 38.58, "stop_pct": 1.88}}

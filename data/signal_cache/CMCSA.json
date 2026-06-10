@@ -1,1 +1,0 @@
-{"ts": 1781119730.321653, "result": {"ticker": "CMCSA", "signal": "HOLD", "reasons": [], "indicators": {"price": 23.88, "rsi": 59.61, "macd": 0.0224, "macd_signal": -0.0081, "macd_hist": 0.0305, "atr": 0.2, "sma_200": 25.12, "sma_fast": 23.85, "sma_slow": 23.96, "volume": 1721512, "volume_sma": 2918977}, "stop_price": 23.48, "stop_pct": 1.68}}

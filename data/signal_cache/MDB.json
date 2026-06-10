@@ -1,1 +1,0 @@
-{"ts": 1781119718.8416502, "result": {"ticker": "MDB", "signal": "HOLD", "reasons": [], "indicators": {"price": 348.78, "rsi": 48.53, "macd": -2.7191, "macd_signal": -4.7219, "macd_hist": 2.0029, "atr": 8.16, "sma_200": 319.89, "sma_fast": 347.93, "sma_slow": 366.54, "volume": 142477, "volume_sma": 203122}, "stop_price": 332.46, "stop_pct": 4.68}}

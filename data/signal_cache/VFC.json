@@ -1,1 +1,0 @@
-{"ts": 1781119740.355657, "result": {"ticker": "VFC", "signal": "HOLD", "reasons": [], "indicators": {"price": 16.48, "rsi": 47.73, "macd": -0.0041, "macd_signal": 0.0471, "macd_hist": -0.0512, "atr": 0.28, "sma_200": 17.39, "sma_fast": 16.73, "sma_slow": 16.59, "volume": 443997, "volume_sma": 750915}, "stop_price": 15.92, "stop_pct": 3.4}}

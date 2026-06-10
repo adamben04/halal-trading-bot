@@ -1,1 +1,0 @@
-{"ts": 1781119725.9012866, "result": {"ticker": "CAT", "signal": "HOLD", "reasons": [], "indicators": {"price": 855.84, "rsi": 28.25, "macd": -13.5342, "macd_signal": -8.1775, "macd_hist": -5.3567, "atr": 16.31, "sma_200": 895.33, "sma_fast": 895.15, "sma_slow": 908.21, "volume": 377239, "volume_sma": 351436}, "stop_price": 823.22, "stop_pct": 3.81}}

@@ -1,1 +1,0 @@
-{"ts": 1781119722.7202885, "result": {"ticker": "SYK", "signal": "HOLD", "reasons": [], "indicators": {"price": 307.32, "rsi": 60.16, "macd": 1.9887, "macd_signal": 2.4798, "macd_hist": -0.491, "atr": 2.84, "sma_200": 303.51, "sma_fast": 308.41, "sma_slow": 302.7, "volume": 188329, "volume_sma": 239044}, "stop_price": 301.64, "stop_pct": 1.85}}

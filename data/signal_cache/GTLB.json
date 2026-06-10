@@ -1,1 +1,0 @@
-{"ts": 1781119718.9911933, "result": {"ticker": "GTLB", "signal": "HOLD", "reasons": [], "indicators": {"price": 28.38, "rsi": 23.61, "macd": -0.5668, "macd_signal": -0.371, "macd_hist": -0.1957, "atr": 0.71, "sma_200": 26.85, "sma_fast": 30.29, "sma_slow": 30.97, "volume": 543508, "volume_sma": 783299}, "stop_price": 26.96, "stop_pct": 5.0}}

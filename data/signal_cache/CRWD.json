@@ -1,1 +1,0 @@
-{"ts": 1781119716.7813342, "result": {"ticker": "CRWD", "signal": "HOLD", "reasons": [], "indicators": {"price": 644.77, "rsi": 45.11, "macd": -11.467, "macd_signal": -14.8107, "macd_hist": 3.3437, "atr": 11.77, "sma_200": 610.63, "sma_fast": 650.38, "sma_slow": 697.5, "volume": 278553, "volume_sma": 394151}, "stop_price": 621.23, "stop_pct": 3.65}}

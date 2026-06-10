@@ -1,1 +1,0 @@
-{"ts": 1781119735.6231136, "result": {"ticker": "SPT", "signal": "HOLD", "reasons": [], "indicators": {"price": 7.05, "rsi": 44.37, "macd": -0.0581, "macd_signal": -0.0757, "macd_hist": 0.0176, "atr": 0.12, "sma_200": 6.83, "sma_fast": 7.07, "sma_slow": 7.3, "volume": 103195, "volume_sma": 119794}, "stop_price": 6.81, "stop_pct": 3.4}}

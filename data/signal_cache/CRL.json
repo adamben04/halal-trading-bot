@@ -1,1 +1,0 @@
-{"ts": 1781119734.48935, "result": {"ticker": "CRL", "signal": "HOLD", "reasons": [], "indicators": {"price": 186.51, "rsi": 50.63, "macd": 1.5174, "macd_signal": 1.9096, "macd_hist": -0.3921, "atr": 3.06, "sma_200": 171.57, "sma_fast": 187.81, "sma_slow": 183.44, "volume": 46073, "volume_sma": 81642}, "stop_price": 180.39, "stop_pct": 3.28}}

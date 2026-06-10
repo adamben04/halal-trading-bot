@@ -1,1 +1,0 @@
-{"ts": 1781119718.2832289, "result": {"ticker": "PCTY", "signal": "HOLD", "reasons": [], "indicators": {"price": 111.43, "rsi": 43.95, "macd": -0.3944, "macd_signal": -0.3797, "macd_hist": -0.0146, "atr": 1.23, "sma_200": 110.95, "sma_fast": 112.58, "sma_slow": 113.99, "volume": 39084, "volume_sma": 51701}, "stop_price": 108.97, "stop_pct": 2.21}}

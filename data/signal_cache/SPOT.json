@@ -1,1 +1,0 @@
-{"ts": 1781119732.6870508, "result": {"ticker": "SPOT", "signal": "HOLD", "reasons": [], "indicators": {"price": 501.31, "rsi": 43.92, "macd": 1.645, "macd_signal": 1.1578, "macd_hist": 0.4872, "atr": 6.73, "sma_200": 468.03, "sma_fast": 501.76, "sma_slow": 497.72, "volume": 260149, "volume_sma": 231426}, "stop_price": 487.85, "stop_pct": 2.68}}

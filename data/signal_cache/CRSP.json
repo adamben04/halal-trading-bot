@@ -1,1 +1,0 @@
-{"ts": 1781119737.3946266, "result": {"ticker": "CRSP", "signal": "HOLD", "reasons": [], "indicators": {"price": 49.56, "rsi": 37.42, "macd": -0.8009, "macd_signal": -0.7293, "macd_hist": -0.0716, "atr": 0.95, "sma_200": 52.16, "sma_fast": 51.02, "sma_slow": 52.5, "volume": 223227, "volume_sma": 165147}, "stop_price": 47.66, "stop_pct": 3.83}}

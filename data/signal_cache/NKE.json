@@ -1,1 +1,0 @@
-{"ts": 1781119724.5698557, "result": {"ticker": "NKE", "signal": "HOLD", "reasons": [], "indicators": {"price": 44.08, "rsi": 58.38, "macd": 0.1342, "macd_signal": 0.1555, "macd_hist": -0.0212, "atr": 0.56, "sma_200": 43.89, "sma_fast": 44.08, "sma_slow": 43.78, "volume": 1306006, "volume_sma": 2209681}, "stop_price": 42.96, "stop_pct": 2.54}}

@@ -1,1 +1,0 @@
-{"ts": 1781119739.0644646, "result": {"ticker": "KDP", "signal": "HOLD", "reasons": [], "indicators": {"price": 31.82, "rsi": 73.11, "macd": 0.3867, "macd_signal": 0.3249, "macd_hist": 0.0618, "atr": 0.27, "sma_200": 29.61, "sma_fast": 31.38, "sma_slow": 30.86, "volume": 3676744, "volume_sma": 1100911}, "stop_price": 31.28, "stop_pct": 1.7}}

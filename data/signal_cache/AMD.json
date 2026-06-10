@@ -1,1 +1,0 @@
-{"ts": 1781119715.8297052, "result": {"ticker": "AMD", "signal": "HOLD", "reasons": [], "indicators": {"price": 449.03, "rsi": 31.12, "macd": -11.8447, "macd_signal": -10.9461, "macd_hist": -0.8987, "atr": 14.42, "sma_200": 452.08, "sma_fast": 471.88, "sma_slow": 496.49, "volume": 2750423, "volume_sma": 3797353}, "stop_price": 420.19, "stop_pct": 6.42}}

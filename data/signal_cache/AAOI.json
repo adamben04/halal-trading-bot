@@ -1,1 +1,0 @@
-{"ts": 1781119736.7272844, "result": {"ticker": "AAOI", "signal": "HOLD", "reasons": [], "indicators": {"price": 173.54, "rsi": 36.22, "macd": -4.358, "macd_signal": -4.3839, "macd_hist": 0.0259, "atr": 10.73, "sma_200": 179.59, "sma_fast": 180.14, "sma_slow": 186.9, "volume": 1165867, "volume_sma": 2668362}, "stop_price": 152.08, "stop_pct": 12.37}}

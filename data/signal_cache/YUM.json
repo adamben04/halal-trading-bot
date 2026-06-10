@@ -1,1 +1,0 @@
-{"ts": 1781119740.647939, "result": {"ticker": "YUM", "signal": "HOLD", "reasons": [], "indicators": {"price": 151.86, "rsi": 66.95, "macd": 0.8354, "macd_signal": 0.7034, "macd_hist": 0.132, "atr": 1.45, "sma_200": 152.32, "sma_fast": 150.4, "sma_slow": 149.43, "volume": 220994, "volume_sma": 252258}, "stop_price": 148.96, "stop_pct": 1.91}}

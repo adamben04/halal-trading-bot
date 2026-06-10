@@ -1,1 +1,0 @@
-{"ts": 1781119728.2564337, "result": {"ticker": "ROK", "signal": "HOLD", "reasons": [], "indicators": {"price": 440.61, "rsi": 40.21, "macd": -2.632, "macd_signal": -1.3245, "macd_hist": -1.3075, "atr": 7.18, "sma_200": 446.33, "sma_fast": 451.44, "sma_slow": 455.56, "volume": 54253, "volume_sma": 64425}, "stop_price": 426.25, "stop_pct": 3.26}}

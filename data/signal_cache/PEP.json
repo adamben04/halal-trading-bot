@@ -1,1 +1,0 @@
-{"ts": 1781119723.8633685, "result": {"ticker": "PEP", "signal": "HOLD", "reasons": [], "indicators": {"price": 144.07, "rsi": 65.74, "macd": 0.4682, "macd_signal": 0.2605, "macd_hist": 0.2076, "atr": 1.1, "sma_200": 148.76, "sma_fast": 142.47, "sma_slow": 142.47, "volume": 650581, "volume_sma": 946353}, "stop_price": 141.87, "stop_pct": 1.53}}

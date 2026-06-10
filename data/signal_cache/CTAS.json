@@ -1,1 +1,0 @@
-{"ts": 1781119743.737143, "result": {"ticker": "CTAS", "signal": "HOLD", "reasons": [], "indicators": {"price": 179.87, "rsi": 64.78, "macd": 0.9029, "macd_signal": 0.7861, "macd_hist": 0.1168, "atr": 1.66, "sma_200": 171.75, "sma_fast": 178.54, "sma_slow": 177.31, "volume": 300418, "volume_sma": 242123}, "stop_price": 176.55, "stop_pct": 1.85}}

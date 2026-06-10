@@ -1,1 +1,0 @@
-{"ts": 1781119736.5051494, "result": {"ticker": "CIEN", "signal": "HOLD", "reasons": [], "indicators": {"price": 432.42, "rsi": 35.97, "macd": -22.971, "macd_signal": -26.2535, "macd_hist": 3.2826, "atr": 12.3, "sma_200": 549.88, "sma_fast": 445.27, "sma_slow": 518.45, "volume": 387715, "volume_sma": 763369}, "stop_price": 407.82, "stop_pct": 5.69}}

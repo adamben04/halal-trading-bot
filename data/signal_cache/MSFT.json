@@ -1,1 +1,0 @@
-{"ts": 1781119714.4923995, "result": {"ticker": "MSFT", "signal": "HOLD", "reasons": [], "indicators": {"price": 398.48, "rsi": 17.99, "macd": -5.7932, "macd_signal": -6.1062, "macd_hist": 0.313, "atr": 3.36, "sma_200": 419.1, "sma_fast": 405.76, "sma_slow": 421.41, "volume": 1944402, "volume_sma": 3477708}, "stop_price": 391.76, "stop_pct": 1.69}}

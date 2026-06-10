@@ -1,1 +1,0 @@
-{"ts": 1781119738.5918155, "result": {"ticker": "CAG", "signal": "HOLD", "reasons": [], "indicators": {"price": 13.32, "rsi": 54.32, "macd": 0.0832, "macd_signal": 0.0783, "macd_hist": 0.0049, "atr": 0.16, "sma_200": 13.58, "sma_fast": 13.22, "sma_slow": 12.99, "volume": 1645934, "volume_sma": 2123699}, "stop_price": 13.0, "stop_pct": 2.4}}

@@ -1,1 +1,0 @@
-{"ts": 1781119745.506, "result": {"ticker": "NOG", "signal": "HOLD", "reasons": [], "indicators": {"price": 21.54, "rsi": 51.82, "macd": -0.0263, "macd_signal": -0.13, "macd_hist": 0.1037, "atr": 0.28, "sma_200": 23.45, "sma_fast": 21.22, "sma_slow": 21.65, "volume": 210455, "volume_sma": 254482}, "stop_price": 20.98, "stop_pct": 2.6}}

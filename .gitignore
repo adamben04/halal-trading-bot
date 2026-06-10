@@ -3,5 +3,6 @@ __pycache__/
 *.pyc
 data/portfolio.db
 data/halal_stocks.json
+data/signal_cache/
 logs/
 *.log

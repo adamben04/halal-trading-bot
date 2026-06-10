@@ -1,1 +1,0 @@
-{"ts": 1781119737.7408257, "result": {"ticker": "SRPT", "signal": "HOLD", "reasons": [], "indicators": {"price": 15.05, "rsi": 41.61, "macd": -0.2489, "macd_signal": -0.2175, "macd_hist": -0.0315, "atr": 0.29, "sma_200": 18.16, "sma_fast": 15.56, "sma_slow": 16.07, "volume": 274014, "volume_sma": 242547}, "stop_price": 14.47, "stop_pct": 3.85}}

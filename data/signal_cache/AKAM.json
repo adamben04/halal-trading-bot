@@ -1,1 +1,0 @@
-{"ts": 1781119731.2775097, "result": {"ticker": "AKAM", "signal": "HOLD", "reasons": [], "indicators": {"price": 131.99, "rsi": 22.76, "macd": -4.8319, "macd_signal": -4.7948, "macd_hist": -0.0371, "atr": 2.56, "sma_200": 141.26, "sma_fast": 138.04, "sma_slow": 149.97, "volume": 711397, "volume_sma": 577189}, "stop_price": 126.87, "stop_pct": 3.88}}

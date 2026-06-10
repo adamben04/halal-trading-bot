@@ -1,1 +1,0 @@
-{"ts": 1781119729.7264671, "result": {"ticker": "MPC", "signal": "HOLD", "reasons": [], "indicators": {"price": 266.25, "rsi": 53.0, "macd": 0.4905, "macd_signal": -0.2729, "macd_hist": 0.7634, "atr": 2.87, "sma_200": 254.96, "sma_fast": 263.32, "sma_slow": 265.0, "volume": 254518, "volume_sma": 260925}, "stop_price": 260.51, "stop_pct": 2.16}}

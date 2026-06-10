@@ -1,1 +1,0 @@
-{"ts": 1781119743.0674639, "result": {"ticker": "ALK", "signal": "HOLD", "reasons": [], "indicators": {"price": 41.47, "rsi": 43.11, "macd": -0.2507, "macd_signal": 0.0305, "macd_hist": -0.2812, "atr": 1.07, "sma_200": 41.0, "sma_fast": 43.08, "sma_slow": 43.03, "volume": 263132, "volume_sma": 466317}, "stop_price": 39.33, "stop_pct": 5.16}}

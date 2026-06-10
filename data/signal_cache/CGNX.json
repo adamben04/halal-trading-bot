@@ -1,1 +1,0 @@
-{"ts": 1781119733.9523222, "result": {"ticker": "CGNX", "signal": "HOLD", "reasons": [], "indicators": {"price": 58.13, "rsi": 22.49, "macd": -1.1673, "macd_signal": -1.0181, "macd_hist": -0.1493, "atr": 1.15, "sma_200": 63.42, "sma_fast": 61.03, "sma_slow": 63.35, "volume": 272337, "volume_sma": 234976}, "stop_price": 55.83, "stop_pct": 3.96}}

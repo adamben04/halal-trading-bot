@@ -1,1 +1,0 @@
-{"ts": 1781119737.4994946, "result": {"ticker": "BEAM", "signal": "HOLD", "reasons": [], "indicators": {"price": 29.75, "rsi": 54.74, "macd": -0.037, "macd_signal": -0.0732, "macd_hist": 0.0362, "atr": 0.75, "sma_200": 30.17, "sma_fast": 29.91, "sma_slow": 30.13, "volume": 143500, "volume_sma": 177259}, "stop_price": 28.25, "stop_pct": 5.04}}

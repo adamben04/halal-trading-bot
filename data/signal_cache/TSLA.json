@@ -1,1 +1,0 @@
-{"ts": 1781119715.1143112, "result": {"ticker": "TSLA", "signal": "HOLD", "reasons": [], "indicators": {"price": 380.81, "rsi": 18.01, "macd": -7.2461, "macd_signal": -6.2194, "macd_hist": -1.0267, "atr": 6.69, "sma_200": 416.48, "sma_fast": 396.56, "sma_slow": 408.11, "volume": 4360886, "volume_sma": 6963548}, "stop_price": 367.43, "stop_pct": 3.51}}

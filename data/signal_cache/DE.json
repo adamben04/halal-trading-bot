@@ -1,1 +1,0 @@
-{"ts": 1781119727.155156, "result": {"ticker": "DE", "signal": "HOLD", "reasons": [], "indicators": {"price": 567.43, "rsi": 49.07, "macd": -2.5709, "macd_signal": -1.8685, "macd_hist": -0.7025, "atr": 6.32, "sma_200": 567.24, "sma_fast": 574.37, "sma_slow": 579.94, "volume": 224636, "volume_sma": 128351}, "stop_price": 554.79, "stop_pct": 2.23}}

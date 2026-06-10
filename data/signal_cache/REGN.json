@@ -1,1 +1,0 @@
-{"ts": 1781119723.0029674, "result": {"ticker": "REGN", "signal": "HOLD", "reasons": [], "indicators": {"price": 602.85, "rsi": 36.95, "macd": -4.0757, "macd_signal": -2.8551, "macd_hist": -1.2206, "atr": 5.46, "sma_200": 659.99, "sma_fast": 613.05, "sma_slow": 616.49, "volume": 79180, "volume_sma": 104692}, "stop_price": 591.93, "stop_pct": 1.81}}

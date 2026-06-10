@@ -1,1 +1,0 @@
-{"ts": 1781119718.1826317, "result": {"ticker": "VEEV", "signal": "HOLD", "reasons": [], "indicators": {"price": 164.28, "rsi": 37.71, "macd": -2.2203, "macd_signal": -2.2234, "macd_hist": 0.0031, "atr": 2.27, "sma_200": 166.94, "sma_fast": 167.47, "sma_slow": 173.99, "volume": 169968, "volume_sma": 244821}, "stop_price": 159.74, "stop_pct": 2.76}}

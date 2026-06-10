@@ -1,1 +1,0 @@
-{"ts": 1781119745.0532203, "result": {"ticker": "CTRA", "signal": "HOLD", "reasons": [], "indicators": {"price": 32.56, "rsi": 13.36, "macd": -0.6818, "macd_signal": -0.3314, "macd_hist": -0.3503, "atr": 0.58, "sma_200": 33.86, "sma_fast": 34.86, "sma_slow": 35.08, "volume": 8534627, "volume_sma": 1494641}, "stop_price": 31.4, "stop_pct": 3.56}}

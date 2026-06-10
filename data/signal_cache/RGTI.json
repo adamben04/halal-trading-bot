@@ -1,1 +1,0 @@
-{"ts": 1781119734.916594, "result": {"ticker": "RGTI", "signal": "HOLD", "reasons": [], "indicators": {"price": 19.58, "rsi": 30.88, "macd": -0.7961, "macd_signal": -0.8832, "macd_hist": 0.0871, "atr": 0.82, "sma_200": 20.83, "sma_fast": 20.63, "sma_slow": 22.7, "volume": 3016060, "volume_sma": 5368195}, "stop_price": 17.94, "stop_pct": 8.38}}

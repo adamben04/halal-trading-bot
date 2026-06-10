@@ -1,1 +1,0 @@
-{"ts": 1781119738.9245188, "result": {"ticker": "HSY", "signal": "HOLD", "reasons": [], "indicators": {"price": 177.03, "rsi": 54.46, "macd": -1.5873, "macd_signal": -2.0883, "macd_hist": 0.501, "atr": 1.78, "sma_200": 187.63, "sma_fast": 176.15, "sma_slow": 181.08, "volume": 159297, "volume_sma": 251125}, "stop_price": 173.47, "stop_pct": 2.01}}

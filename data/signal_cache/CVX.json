@@ -1,1 +1,0 @@
-{"ts": 1781119729.0709457, "result": {"ticker": "CVX", "signal": "HOLD", "reasons": [], "indicators": {"price": 191.53, "rsi": 59.44, "macd": 0.7659, "macd_signal": 0.3101, "macd_hist": 0.4558, "atr": 1.6, "sma_200": 188.13, "sma_fast": 189.0, "sma_slow": 188.74, "volume": 761282, "volume_sma": 850466}, "stop_price": 188.33, "stop_pct": 1.67}}
