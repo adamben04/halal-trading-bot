@@ -10,7 +10,7 @@ from config import (
 )
 
 CACHE_DIR = "data/signal_cache"
-CACHE_TTL = 600  # 10 minutes
+CACHE_TTL = 1800  # 30 minutes for intraday signals
 
 
 def _cache_path(ticker):
@@ -66,26 +66,15 @@ def compute_atr(high, low, close, period=14):
     return tr.rolling(window=period).mean()
 
 
-def get_signals(ticker: str, timeframe: str = "daily") -> dict:
+def get_signals(ticker: str) -> dict:
     cached = _read_cache(ticker)
     if cached:
         return cached
 
     stock = yf.Ticker(ticker)
+    df = stock.history(period="60d", interval="1h")
 
-    if timeframe == "daily":
-        df = stock.history(period="1y", interval="1d")
-    elif timeframe == "4h":
-        df = stock.history(period="60d", interval="1h")
-        # Resample to 4h
-        df = df.resample("4h").agg({
-            "Open": "first", "High": "max", "Low": "min",
-            "Close": "last", "Volume": "sum"
-        }).dropna()
-    else:
-        df = stock.history(period="6mo", interval="1d")
-
-    if df.empty or len(df) < TREND_MA:
+    if df.empty or len(df) < 200:
         return {"ticker": ticker, "error": "Insufficient data", "signal": "HOLD"}
 
     close = df["Close"]
@@ -93,11 +82,10 @@ def get_signals(ticker: str, timeframe: str = "daily") -> dict:
     low = df["Low"]
     volume = df["Volume"]
 
-    # Indicators
     rsi = compute_rsi(close)
     macd_line, signal_line, histogram = compute_macd(close)
     atr = compute_atr(high, low, close)
-    sma_200 = close.rolling(TREND_MA).mean()
+    sma_200 = close.rolling(200).mean()
     sma_fast = close.rolling(FAST_MA).mean()
     sma_slow = close.rolling(SLOW_MA).mean()
     volume_sma = volume.rolling(20).mean()
@@ -116,14 +104,12 @@ def get_signals(ticker: str, timeframe: str = "daily") -> dict:
         "volume_sma": int(volume_sma.iloc[-1]),
     }
 
-    # Previous values for crossover detection
     prev = {
         "macd": round(macd_line.iloc[-2], 4),
         "macd_signal": round(signal_line.iloc[-2], 4),
         "macd_hist": round(histogram.iloc[-2], 4),
     }
 
-    # Signal logic
     signal = "HOLD"
     reasons = []
 
@@ -133,15 +119,12 @@ def get_signals(ticker: str, timeframe: str = "daily") -> dict:
     macd_cross_down = prev["macd"] >= prev["macd_signal"] and latest["macd"] < latest["macd_signal"]
     volume_surge = latest["volume"] > latest["volume_sma"] * VOLUME_SURGE_PCT
 
-    # Buy signal
     if above_200sma and rsi_ok and macd_cross_up and volume_surge:
         signal = "BUY"
         reasons.append("Above 200 SMA")
         reasons.append(f"RSI {latest['rsi']} < {RSI_NEUTRAL}")
         reasons.append("MACD crossed above signal")
         reasons.append(f"Volume surge {latest['volume']}/{latest['volume_sma']}")
-
-    # Sell signal
     elif latest["rsi"] > RSI_OVERBOUGHT:
         signal = "SELL"
         reasons.append(f"RSI overbought {latest['rsi']}")
@@ -149,7 +132,6 @@ def get_signals(ticker: str, timeframe: str = "daily") -> dict:
         signal = "SELL"
         reasons.append("MACD bearish cross below 200 SMA")
 
-    # Trailing stop check
     stop_price = latest["price"] - (latest["atr"] * 2)
 
     result = {

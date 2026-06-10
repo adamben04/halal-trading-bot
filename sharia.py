@@ -4,9 +4,10 @@ import yfinance as yf
 from datetime import datetime
 from config import (
     DEBT_THRESHOLD, CASH_THRESHOLD, RECEIVABLES_THRESHOLD,
-    IMPURE_INCOME_THRESHOLD, PROHIBITED_SECTORS, PROHIBITED_KEYWORDS,
-    TICKER_CACHE_FILE
+    IMPURE_INCOME_THRESHOLD, PROHIBITED_SECTORS, PROHIBITED_KEYWORDS
 )
+
+TICKER_CACHE_FILE = "data/halal_stocks.json"
 
 
 class ShariaScreener:
