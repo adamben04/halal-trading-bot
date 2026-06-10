@@ -4,13 +4,10 @@ import time
 import pandas as pd
 import numpy as np
 import yfinance as yf
-from config import (
-    RSI_OVERBOUGHT, RSI_OVERSOLD, RSI_NEUTRAL,
-    VOLUME_SURGE_PCT, FAST_MA, SLOW_MA, TREND_MA
-)
+from config import ATR_STOP_MULTIPLIER
 
 CACHE_DIR = "data/signal_cache"
-CACHE_TTL = 1800  # 30 minutes for intraday signals
+CACHE_TTL = 1800  # 30 minutes
 
 
 def _cache_path(ticker):
@@ -49,21 +46,25 @@ def compute_rsi(series, period=14):
     return 100 - (100 / (1 + rs))
 
 
-def compute_macd(series, fast=12, slow=26, signal=9):
-    ema_fast = series.ewm(span=fast, adjust=False).mean()
-    ema_slow = series.ewm(span=slow, adjust=False).mean()
-    macd_line = ema_fast - ema_slow
-    signal_line = macd_line.ewm(span=signal, adjust=False).mean()
-    histogram = macd_line - signal_line
-    return macd_line, signal_line, histogram
-
-
 def compute_atr(high, low, close, period=14):
     tr1 = high - low
     tr2 = (high - close.shift(1)).abs()
     tr3 = (low - close.shift(1)).abs()
     tr = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
     return tr.rolling(window=period).mean()
+
+
+def compute_adx(high, low, close, period=14):
+    plus_dm = high.diff()
+    minus_dm = -low.diff()
+    plus_dm = plus_dm.where((plus_dm > minus_dm) & (plus_dm > 0), 0)
+    minus_dm = minus_dm.where((minus_dm > plus_dm) & (minus_dm > 0), 0)
+    atr = compute_atr(high, low, close, period)
+    plus_di = 100 * (plus_dm.rolling(period).mean() / atr)
+    minus_di = 100 * (minus_dm.rolling(period).mean() / atr)
+    dx = 100 * ((plus_di - minus_di).abs() / (plus_di + minus_di).replace(0, np.nan))
+    adx = dx.rolling(period).mean()
+    return adx, plus_di, minus_di
 
 
 def get_signals(ticker: str) -> dict:
@@ -74,74 +75,91 @@ def get_signals(ticker: str) -> dict:
     stock = yf.Ticker(ticker)
     df = stock.history(period="60d", interval="1h")
 
-    if df.empty or len(df) < 200:
+    if df.empty or len(df) < 30:
         return {"ticker": ticker, "error": "Insufficient data", "signal": "HOLD"}
 
     close = df["Close"]
     high = df["High"]
     low = df["Low"]
-    volume = df["Volume"]
 
-    rsi = compute_rsi(close)
-    macd_line, signal_line, histogram = compute_macd(close)
+    rsi_2 = compute_rsi(close, 2)
+    rsi_14 = compute_rsi(close, 14)
     atr = compute_atr(high, low, close)
+    adx, plus_di, minus_di = compute_adx(high, low, close)
+
+    donchian_high_20 = high.rolling(20).max()
+    donchian_low_20 = low.rolling(20).min()
+
+    sma_50 = close.rolling(50).mean()
     sma_200 = close.rolling(200).mean()
-    sma_fast = close.rolling(FAST_MA).mean()
-    sma_slow = close.rolling(SLOW_MA).mean()
-    volume_sma = volume.rolling(20).mean()
 
     latest = {
         "price": round(close.iloc[-1], 2),
-        "rsi": round(rsi.iloc[-1], 2),
-        "macd": round(macd_line.iloc[-1], 4),
-        "macd_signal": round(signal_line.iloc[-1], 4),
-        "macd_hist": round(histogram.iloc[-1], 4),
+        "rsi_2": round(rsi_2.iloc[-1], 2),
+        "rsi_14": round(rsi_14.iloc[-1], 2),
         "atr": round(atr.iloc[-1], 2),
+        "adx": round(adx.iloc[-1], 2),
+        "donchian_high_20": round(donchian_high_20.iloc[-1], 2),
+        "donchian_low_20": round(donchian_low_20.iloc[-1], 2),
+        "sma_50": round(sma_50.iloc[-1], 2),
         "sma_200": round(sma_200.iloc[-1], 2),
-        "sma_fast": round(sma_fast.iloc[-1], 2),
-        "sma_slow": round(sma_slow.iloc[-1], 2),
-        "volume": int(volume.iloc[-1]),
-        "volume_sma": int(volume_sma.iloc[-1]),
     }
 
-    prev = {
-        "macd": round(macd_line.iloc[-2], 4),
-        "macd_signal": round(signal_line.iloc[-2], 4),
-        "macd_hist": round(histogram.iloc[-2], 4),
-    }
+    prev_price = round(close.iloc[-2], 2)
 
     signal = "HOLD"
     reasons = []
+    stop_price = None
+    take_profit = None
+    strategy = None
 
-    above_200sma = latest["price"] > latest["sma_200"]
-    rsi_ok = latest["rsi"] < RSI_NEUTRAL
-    macd_cross_up = prev["macd"] <= prev["macd_signal"] and latest["macd"] > latest["macd_signal"]
-    macd_cross_down = prev["macd"] >= prev["macd_signal"] and latest["macd"] < latest["macd_signal"]
-    volume_surge = latest["volume"] > latest["volume_sma"] * VOLUME_SURGE_PCT
-
-    if above_200sma and rsi_ok and macd_cross_up and volume_surge:
+    # Strategy 1: RSI(2) Mean Reversion
+    if rsi_2.iloc[-1] < 10 and latest["adx"] > 20:
         signal = "BUY"
-        reasons.append("Above 200 SMA")
-        reasons.append(f"RSI {latest['rsi']} < {RSI_NEUTRAL}")
-        reasons.append("MACD crossed above signal")
-        reasons.append(f"Volume surge {latest['volume']}/{latest['volume_sma']}")
-    elif latest["rsi"] > RSI_OVERBOUGHT:
-        signal = "SELL"
-        reasons.append(f"RSI overbought {latest['rsi']}")
-    elif macd_cross_down and latest["price"] < latest["sma_200"]:
-        signal = "SELL"
-        reasons.append("MACD bearish cross below 200 SMA")
+        strategy = "RSI(2) Mean Reversion"
+        reasons.append(f"RSI(2) = {latest['rsi_2']} (< 10, deeply oversold)")
+        reasons.append(f"ADX = {latest['adx']} (> 20, trend exists)")
+        stop_price = latest["price"] - (latest["atr"] * ATR_STOP_MULTIPLIER)
+        take_profit = latest["price"] * 1.03
 
-    stop_price = latest["price"] - (latest["atr"] * 2)
+    # Strategy 2: Donchian Breakout
+    elif (prev_price < donchian_high_20.iloc[-2] and
+          latest["price"] >= latest["donchian_high_20"] and
+          latest["adx"] > 25):
+        signal = "BUY"
+        strategy = "Donchian Breakout"
+        reasons.append(f"Price {latest['price']} broke 20-period high {latest['donchian_high_20']}")
+        reasons.append(f"ADX = {latest['adx']} (> 25, strong trend)")
+        stop_price = latest["donchian_low_20"]
+        take_profit = latest["price"] + (latest["atr"] * 3)
+
+    # Sell signals
+    elif rsi_14.iloc[-1] > 80:
+        signal = "SELL"
+        reasons.append(f"RSI(14) = {latest['rsi_14']} (> 80, overbought)")
+
+    elif (prev_price > donchian_low_20.iloc[-2] and
+          latest["price"] <= latest["donchian_low_20"] and
+          latest["adx"] > 25):
+        signal = "SELL"
+        reasons.append("Price broke below 20-period low with strong trend")
+
+    if stop_price is not None:
+        stop_price = round(stop_price, 2)
+    if take_profit is not None:
+        take_profit = round(take_profit, 2)
 
     result = {
         "ticker": ticker,
         "signal": signal,
+        "strategy": strategy,
         "reasons": reasons,
         "indicators": latest,
-        "stop_price": round(stop_price, 2),
-        "stop_pct": round((latest["price"] - stop_price) / latest["price"] * 100, 2),
+        "stop_price": stop_price,
+        "take_profit": take_profit,
     }
+    if stop_price and latest["price"] > 0:
+        result["stop_pct"] = round((latest["price"] - stop_price) / latest["price"] * 100, 2)
     _write_cache(ticker, result)
     return result
 
@@ -158,6 +176,7 @@ def scan_universe(tickers: list) -> list:
 
 
 if __name__ == "__main__":
-    signals = scan_universe(["AAPL", "MSFT", "NVDA", "TSLA"])
+    signals = scan_universe(["AAPL", "MSFT", "NVDA", "TSLA", "GOOGL", "AMZN"])
     for s in signals:
-        print(f"{s['ticker']}: {s['signal']} | {s.get('reasons', [])}")
+        strat = s.get("strategy", "N/A")
+        print(f"{s['ticker']}: {s['signal']} [{strat}] | {s.get('reasons', [])}")

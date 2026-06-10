@@ -130,9 +130,10 @@ class HalalTradingBot:
             if current_price <= stop_price:
                 exit_reason = f"ATR stop hit: ${stop_price:.2f}"
 
-        # Take profit at 15%
-        if current_price >= entry_price * 1.15:
-            exit_reason = "Take profit at 15%"
+        # Take profit
+        take_profit = signal.get("take_profit") or (entry_price * 1.10)
+        if current_price >= take_profit:
+            exit_reason = f"Take profit hit: ${take_profit:.2f}"
 
         if exit_reason:
             log.info(f"SELL {symbol}: {exit_reason}")
