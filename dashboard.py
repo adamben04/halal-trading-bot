@@ -157,8 +157,12 @@ DARK_CSS = """
 
 st.markdown(DARK_CSS, unsafe_allow_html=True)
 
-ALPACA_API_KEY = os.environ.get("ALPACA_API_KEY", "")
-ALPACA_SECRET_KEY = os.environ.get("ALPACA_SECRET_KEY", "")
+try:
+    ALPACA_API_KEY = st.secrets["ALPACA_API_KEY"]
+    ALPACA_SECRET_KEY = st.secrets["ALPACA_SECRET_KEY"]
+except (KeyError, FileNotFoundError):
+    ALPACA_API_KEY = os.environ.get("ALPACA_API_KEY", "")
+    ALPACA_SECRET_KEY = os.environ.get("ALPACA_SECRET_KEY", "")
 
 if not ALPACA_API_KEY or not ALPACA_SECRET_KEY:
     st.error("Missing API keys")
