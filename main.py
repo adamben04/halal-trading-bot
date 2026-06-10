@@ -113,13 +113,14 @@ class HalalTradingBot:
             return
 
         qty = sizing["size"]
-        log.info(f"BUY {qty} {ticker} @ ${price} | Stop: ${stop_price} ({sizing['stop_pct']}%) | Risk: ${sizing['risk_amount']}")
+        take_profit = price * 1.10  # 10% take profit
+        log.info(f"BUY {qty} {ticker} @ ${price} | Stop: ${stop_price} ({sizing['stop_pct']}%) | TP: ${take_profit:.2f} | Risk: ${sizing['risk_amount']}")
 
-        result = self.trader.buy(ticker, qty)
+        result = self.trader.buy_bracket(ticker, qty, stop_price, take_profit)
         if "error" in result:
             log.error(f"Buy failed for {ticker}: {result['error']}")
         else:
-            log.info(f"Order placed: {result['order_id']}")
+            log.info(f"Bracket order placed: {result['order_id']}")
             log_open_position(ticker, qty, price, sector, json.dumps(signal["reasons"]))
 
     def _check_exit(self, position):

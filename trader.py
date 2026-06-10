@@ -1,8 +1,8 @@
 import os
 from datetime import datetime
 from alpaca.trading.client import TradingClient
-from alpaca.trading.requests import MarketOrderRequest, LimitOrderRequest
-from alpaca.trading.enums import OrderSide, TimeInForce
+from alpaca.trading.requests import MarketOrderRequest, LimitOrderRequest, StopLossRequest, TakeProfitRequest
+from alpaca.trading.enums import OrderSide, TimeInForce, OrderClass
 from alpaca.data.historical.stock import StockHistoricalDataClient
 from alpaca.data.requests import StockBarsRequest
 from alpaca.data.timeframe import TimeFrame
@@ -85,6 +85,30 @@ class Trader:
             else:
                 result = self.trading_client.close_position(symbol, close_options={"qty": str(qty)})
             return {"status": "closed", "symbol": symbol}
+        except Exception as e:
+            return {"error": str(e)}
+
+    def buy_bracket(self, symbol: str, qty: int, stop_price: float,
+                    take_profit_price: float) -> dict:
+        order = MarketOrderRequest(
+            symbol=symbol, qty=qty, side=OrderSide.BUY,
+            time_in_force=TimeInForce.DAY,
+            order_class=OrderClass.BRACKET,
+            take_profit=TakeProfitRequest(limit_price=take_profit_price),
+            stop_loss=StopLossRequest(stop_price=stop_price),
+        )
+        try:
+            result = self.trading_client.submit_order(order_data=order)
+            return {
+                "order_id": str(result.id),
+                "symbol": result.symbol,
+                "side": result.side.value,
+                "qty": result.qty,
+                "type": "bracket",
+                "status": result.status.value,
+                "stop_price": stop_price,
+                "take_profit": take_profit_price,
+            }
         except Exception as e:
             return {"error": str(e)}
 
