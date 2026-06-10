@@ -9,7 +9,7 @@ import plotly.graph_objects as go
 import plotly.io as pio
 import pandas as pd
 
-st.set_page_config(page_title="Halal Trading Bot", layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="Trading Bot", layout="wide", initial_sidebar_state="collapsed")
 
 DARK_CSS = """
 <style>
@@ -191,8 +191,8 @@ total_pl_pct = (total_pl / positions_value * 100) if positions_value > 0 else 0
 
 col_logo, col_status = st.columns([3, 1])
 with col_logo:
-    st.markdown('<div class="logo-text">Halal Trading Bot</div>', unsafe_allow_html=True)
-    st.markdown('<div class="logo-sub">Paper Trading &bull; Sharia Compliant</div>', unsafe_allow_html=True)
+    st.markdown('<div class="logo-text">Trading Bot</div>', unsafe_allow_html=True)
+    st.markdown('<div class="logo-sub">Paper Trading</div>', unsafe_allow_html=True)
 with col_status:
     if clock.is_open:
         st.markdown('<div class="status-badge status-open"><span class="status-dot"></span>Market Open</div>', unsafe_allow_html=True)
@@ -297,7 +297,7 @@ st.markdown("<br>", unsafe_allow_html=True)
 st.markdown(f"""
 <div style="text-align:center;padding:20px 0;">
     <span style="font-size:0.65rem;color:#484f58;letter-spacing:0.1em;text-transform:uppercase;">
-        Last updated: {datetime.now().strftime('%I:%M %p ET')} &bull; Paper Trading &bull; AAOIFI Compliant
+        Last updated: {datetime.now().strftime('%I:%M %p ET')} &bull; Paper Trading
     </span>
 </div>
 """, unsafe_allow_html=True)
