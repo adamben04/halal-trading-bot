@@ -13,60 +13,47 @@ st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
-    /* ===== RESET ===== */
     * {
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
         -webkit-font-smoothing: antialiased !important;
         -moz-osx-font-smoothing: grayscale !important;
     }
 
-    /* ===== HIDE STREAMLIT CHROME ===== */
     #MainMenu, footer, header[data-testid="stHeader"],
     .stDeployButton, div[data-testid="stToolbar"],
     div[data-testid="stDecoration"], div[data-testid="stStatusWidget"] {
         visibility: hidden; height: 0; display: none; position: fixed;
     }
 
-    /* ===== ROBINHOOD CANVAS: #110e08 (warm black) ===== */
-    .stApp {
-        background: #110e08 !important;
-    }
-    section[data-testid="stSidebar"] { background: #110e08; }
+    .stApp { background: #000000 !important; }
+    section[data-testid="stSidebar"] { background: #000000; }
 
     .block-container {
-        padding-top: 16px !important;
+        padding-top: 12px !important;
         padding-bottom: 0px !important;
         padding-left: 16px !important;
         padding-right: 16px !important;
-        max-width: 960px !important;
+        max-width: 480px !important;
     }
 
-    /* ===== SCROLLBAR ===== */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #110e08; }
-    ::-webkit-scrollbar-thumb { background: #35322d; border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: #4d4a46; }
+    ::-webkit-scrollbar { width: 0; height: 0; }
 
-    /* ===== PORTFOLIO HERO ===== */
-    .rh-hero {
-        padding: 4px 0 0 0;
-    }
+    /* ===== HERO ===== */
     .rh-hero-value {
-        font-size: 36px;
+        font-size: 34px;
         font-weight: 700;
-        letter-spacing: -0.025em;
+        letter-spacing: -0.03em;
         line-height: 1.0;
         color: #FFFFFF;
         margin: 0;
-        padding: 0;
     }
     .rh-change {
-        font-size: 14px;
+        font-size: 15px;
         font-weight: 500;
         line-height: 1.4;
-        margin: 6px 0 0 0;
+        margin: 4px 0 0 0;
     }
-    .rh-change.up { color: #00C805; }
+    .rh-change.up { color: #00D64F; }
     .rh-change.down { color: #FF5000; }
 
     /* ===== MARKET STATUS ===== */
@@ -80,71 +67,65 @@ st.markdown("""
         text-transform: uppercase;
     }
     .rh-dot {
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
+        width: 6px; height: 6px; border-radius: 50%;
     }
-    .rh-dot.open { background: #00C805; animation: rhPulse 2s infinite; }
+    .rh-dot.open { background: #00D64F; animation: rhPulse 2s infinite; }
     .rh-dot.closed { background: #FF5000; }
     @keyframes rhPulse {
         0%, 100% { opacity: 1; }
         50% { opacity: 0.3; }
     }
 
-    /* ===== STAT CARDS ===== */
+    /* ===== STAT ROW ===== */
     .rh-stats {
         display: grid;
         grid-template-columns: repeat(5, 1fr);
-        gap: 8px;
-        margin: 12px 0;
+        gap: 1px;
+        background: #1A1A1A;
+        border: 1px solid #1A1A1A;
+        margin: 16px 0 8px 0;
     }
     .rh-stat {
-        background: #1c180d;
-        border: 1px solid #35322d;
-        border-radius: 0px;
-        padding: 14px 16px;
+        background: #0A0A0A;
+        padding: 14px 8px;
+        text-align: center;
     }
     .rh-stat-label {
-        font-size: 10px;
+        font-size: 9px;
         font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 0.06em;
-        color: #4d4a46;
-        margin-bottom: 6px;
+        letter-spacing: 0.08em;
+        color: #555;
+        margin-bottom: 4px;
     }
     .rh-stat-val {
-        font-size: 16px;
+        font-size: 13px;
         font-weight: 700;
         color: #FFFFFF;
-        letter-spacing: -0.01em;
         font-feature-settings: 'tnum';
     }
 
-    /* ===== SECTION HEADER ===== */
+    /* ===== SECTION ===== */
     .rh-section {
         font-size: 11px;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.06em;
-        color: #4d4a46;
-        padding-bottom: 8px;
-        border-bottom: 1px solid #35322d;
-        margin-bottom: 0;
+        color: #555;
+        padding: 12px 0 8px 0;
+        border-bottom: 1px solid #1A1A1A;
     }
 
     /* ===== POSITION ROW ===== */
     .rh-pos {
         display: flex;
         align-items: center;
-        height: 64px;
-        padding: 0 12px;
-        border-bottom: 1px solid #1c180d;
-        transition: background-color 120ms ease-out;
-        cursor: default;
+        height: 68px;
+        padding: 0 4px;
+        border-bottom: 1px solid #111;
+        transition: background 100ms;
     }
-    .rh-pos:hover {
-        background: rgba(255,255,255,0.02);
-    }
+    .rh-pos:active { background: rgba(255,255,255,0.03); }
     .rh-pos-left {
         display: flex;
         align-items: center;
@@ -153,134 +134,53 @@ st.markdown("""
         min-width: 0;
     }
     .rh-icon {
-        width: 32px;
-        height: 32px;
-        border-radius: 16px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 700;
-        font-size: 11px;
-        letter-spacing: 0.02em;
-        flex-shrink: 0;
+        width: 36px; height: 36px; border-radius: 18px;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 700; font-size: 12px; flex-shrink: 0;
     }
     .rh-ticker {
-        font-size: 15px;
-        font-weight: 600;
-        color: #FFFFFF;
+        font-size: 16px; font-weight: 600; color: #FFFFFF;
         letter-spacing: -0.01em;
-        line-height: 1.2;
     }
     .rh-sub {
-        font-size: 12px;
-        color: #4d4a46;
-        line-height: 1.3;
-        margin-top: 1px;
+        font-size: 13px; color: #555; margin-top: 1px;
     }
-    .rh-pos-right {
-        text-align: right;
-        flex-shrink: 0;
-    }
+    .rh-pos-right { text-align: right; flex-shrink: 0; }
     .rh-pos-val {
-        font-size: 15px;
-        font-weight: 600;
-        color: #FFFFFF;
-        letter-spacing: -0.01em;
+        font-size: 16px; font-weight: 600; color: #FFFFFF;
         font-feature-settings: 'tnum';
     }
     .rh-pos-pl {
-        font-size: 12px;
-        font-weight: 400;
-        line-height: 1.35;
-        letter-spacing: 0.01em;
-        font-feature-settings: 'tnum';
-        margin-top: 2px;
+        font-size: 13px; font-weight: 400;
+        font-feature-settings: 'tnum'; margin-top: 1px;
     }
-    .rh-pos-pl.up { color: #00C805; }
+    .rh-pos-pl.up { color: #00D64F; }
     .rh-pos-pl.down { color: #FF5000; }
 
-    /* ===== TIME TABS ===== */
-    .rh-tabs {
-        display: flex;
-        gap: 2px;
-        padding: 3px;
-        background: #1c180d;
-        border-radius: 0px;
-        width: fit-content;
-        margin: 8px 0;
-    }
-    .rh-tab {
-        padding: 5px 14px;
-        border-radius: 0px;
-        font-size: 12px;
-        font-weight: 600;
-        color: #4d4a46;
-        cursor: pointer;
-        transition: all 120ms ease-out;
-    }
-    .rh-tab:hover { color: #AAAAAA; }
-    .rh-tab.active {
-        background: #35322d;
-        color: #FFFFFF;
-    }
-
-    /* ===== CASH ROW ===== */
+    /* ===== CASH BAR ===== */
     .rh-cash {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 14px 16px;
-        background: #1c180d;
-        border: 1px solid #35322d;
-        border-radius: 0px;
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 14px 12px;
+        background: #0A0A0A;
+        border: 1px solid #1A1A1A;
         margin: 12px 0;
     }
 
     /* ===== FOOTER ===== */
     .rh-footer {
-        text-align: center;
-        font-size: 10px;
-        color: #35322d;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
-        padding: 20px 0 8px 0;
+        text-align: center; font-size: 10px; color: #333;
+        letter-spacing: 0.05em; text-transform: uppercase;
+        padding: 24px 0 12px 0;
     }
 
-    /* ===== OVERRIDE STREAMLIT METRICS ===== */
-    div[data-testid="stMetric"] {
-        background: #1c180d !important;
-        border: 1px solid #35322d !important;
-        border-radius: 0px !important;
-        padding: 12px 14px !important;
-        border-left: none !important;
-        box-shadow: none !important;
-    }
-    div[data-testid="stMetric"] label p {
-        color: #4d4a46 !important;
-        font-size: 10px !important;
-        font-weight: 700 !important;
-        text-transform: uppercase !important;
-        letter-spacing: 0.06em !important;
-    }
-    div[data-testid="stMetric"] [data-testid="stMetricValue"] p {
-        color: #FFFFFF !important;
-        font-size: 18px !important;
-        font-weight: 700 !important;
-    }
-    div[data-testid="stMetric"] [data-testid="stMetricDelta"] > div {
-        color: #00C805 !important;
-    }
-    div[data-testid="stMetric"] [data-testid="stMetricDelta"] > div p {
-        color: inherit !important;
-    }
+    /* ===== HIDE PLOTLY TOOLBAR ===== */
+    .modebar { display: none !important; }
 
-    [data-testid="stHorizontalBlock"] {
-        gap: 8px !important;
-    }
-
-    /* ===== CHART CONTAINER ===== */
-    .rh-chart {
-        margin: 4px 0;
+    /* ===== MOBILE TWEAKS ===== */
+    @media (max-width: 480px) {
+        .block-container { padding-left: 12px !important; padding-right: 12px !important; }
+        .rh-hero-value { font-size: 32px; }
+        .rh-stat-val { font-size: 12px; }
     }
 </style>
 """, unsafe_allow_html=True)
@@ -310,7 +210,6 @@ except Exception as e:
     st.error(f"Connection failed: {e}")
     st.stop()
 
-# ========== DATA ==========
 equity = float(account.equity)
 cash = float(account.cash)
 buying_power = float(account.buying_power)
@@ -318,33 +217,31 @@ positions_value = sum(float(p.market_value) for p in positions)
 total_pl = sum(float(p.unrealized_pl) for p in positions)
 total_pl_pct = (total_pl / equity * 100) if equity > 0 else 0
 
-# ========== HEADER: Market status + Portfolio value ==========
+# ========== HEADER ==========
 if clock.is_open:
-    st.markdown(f'<div style="text-align:right;"><span class="rh-status"><span class="rh-dot open"></span><span style="color:#00C805;">MARKET OPEN</span></span></div>', unsafe_allow_html=True)
+    st.markdown(f'<div style="text-align:right;"><span class="rh-status"><span class="rh-dot open"></span><span style="color:#00D64F;">OPEN</span></span></div>', unsafe_allow_html=True)
 else:
-    st.markdown(f'<div style="text-align:right;"><span class="rh-status"><span class="rh-dot closed"></span><span style="color:#FF5000;">MARKET CLOSED</span></span></div>', unsafe_allow_html=True)
+    st.markdown(f'<div style="text-align:right;"><span class="rh-status"><span class="rh-dot closed"></span><span style="color:#FF5000;">CLOSED</span></span></div>', unsafe_allow_html=True)
 
 pl_sign = "+" if total_pl >= 0 else ""
-pl_class = "up" if total_pl >= 0 else "down"
+pl_cls = "up" if total_pl >= 0 else "down"
 
 st.markdown(f"""
-<div class="rh-hero">
+<div style="padding-top:2px;">
     <div class="rh-hero-value">${equity:,.2f}</div>
-    <div class="rh-change {pl_class}">{pl_sign}${total_pl:,.2f} ({pl_sign}{total_pl_pct:.2f}%) today</div>
+    <div class="rh-change {pl_cls}">{pl_sign}${total_pl:,.2f} ({pl_sign}{total_pl_pct:.2f}%) today</div>
 </div>
 """, unsafe_allow_html=True)
 
-# ========== CHART ==========
+# ========== CHART — mobile sparkline, no axes ==========
 chart_dates = []
 chart_values = []
-chart_source = None
 
 try:
     ph = trading_client.get_portfolio_history(period="1M", timeframe="1D")
     if ph and ph.timestamp and ph.equity and len(ph.timestamp) > 1:
         chart_dates = [datetime.fromtimestamp(t) for t in ph.timestamp]
         chart_values = list(ph.equity)
-        chart_source = "portfolio"
 except Exception:
     pass
 
@@ -361,84 +258,66 @@ if not chart_dates:
             spy_close = [b.close for b in spy_bars]
             spy_start = spy_close[0]
             chart_values = [(v / spy_start) * equity for v in spy_close]
-            chart_source = "spy"
     except Exception:
         pass
 
 if chart_dates and chart_values and len(chart_dates) > 1:
     is_up = chart_values[-1] >= chart_values[0]
-    chart_color = "#00C805" if is_up else "#FF5000"
-    r = int(chart_color[1:3], 16)
-    g = int(chart_color[3:5], 16)
-    b = int(chart_color[5:7], 16)
+    line_color = "#00D64F" if is_up else "#FF5000"
+    r = int(line_color[1:3], 16)
+    g = int(line_color[3:5], 16)
+    b = int(line_color[5:7], 16)
 
     fig = go.Figure()
     fig.add_trace(go.Scatter(
         x=chart_dates,
         y=chart_values,
         mode="lines",
-        line=dict(color=chart_color, width=2, shape="spline"),
+        line=dict(color=line_color, width=2.5, shape="spline"),
         fill="tozeroy",
-        fillcolor=f"rgba({r},{g},{b},0.06)",
-        hovertemplate="%{x|%b %d}<br>$%{y:,.2f}<extra></extra>",
+        fillcolor=f"rgba({r},{g},{b},0.08)",
+        hoverinfo="x+y",
         showlegend=False,
     ))
     fig.update_layout(
+        height=220,
+        margin=dict(l=0, r=0, t=0, b=0),
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
-        font=dict(color="#4d4a46", size=11, family="Inter"),
-        margin=dict(l=0, r=0, t=4, b=0),
-        height=180,
-        xaxis=dict(
-            showgrid=False, zeroline=False, showline=False,
-            showticklabels=True, tickformat="%b %d", nticks=5,
-            tickfont=dict(size=10, color="#35322d"),
-        ),
-        yaxis=dict(
-            showgrid=False, zeroline=False, showline=False,
-            showticklabels=True, tickformat="$,.0f", nticks=4,
-            tickfont=dict(size=10, color="#35322d"),
-            side="right",
-        ),
+        xaxis=dict(visible=False, fixedrange=True),
+        yaxis=dict(visible=False, fixedrange=False),
         hovermode="x unified",
         hoverlabel=dict(
-            bgcolor="#1c180d", bordercolor="#35322d",
-            font=dict(size=12, color="#FFFFFF", family="Inter"),
+            bgcolor="#1A1A1A", bordercolor="#333",
+            font=dict(size=13, color="#FFF", family="Inter"),
         ),
+        dragmode=False,
     )
-    st.plotly_chart(fig, use_container_width=True)
-
-    st.markdown("""
-    <div class="rh-tabs">
-        <span class="rh-tab">1D</span>
-        <span class="rh-tab">1W</span>
-        <span class="rh-tab active">1M</span>
-        <span class="rh-tab">3M</span>
-        <span class="rh-tab">1Y</span>
-        <span class="rh-tab">ALL</span>
-    </div>
-    """, unsafe_allow_html=True)
+    st.plotly_chart(fig, use_container_width=True, config={
+        "responsive": True,
+        "displayModeBar": False,
+        "displaylogo": False,
+        "scrollZoom": False,
+        "staticPlot": False,
+    })
 else:
-    st.markdown('<div style="height:180px;display:flex;align-items:center;justify-content:center;color:#35322d;font-size:12px;">Loading chart...</div>', unsafe_allow_html=True)
+    st.markdown('<div style="height:220px;"></div>', unsafe_allow_html=True)
 
 # ========== STAT CARDS ==========
-stat_labels = ["CASH", "INVESTED", "P&L", "BUYING POWER", "POSITIONS"]
-stat_vals = [
-    f"${cash:,.2f}",
-    f"${positions_value:,.2f}",
-    f"${total_pl:+,.2f}",
-    f"${buying_power:,.2f}",
-    str(len(positions)),
-]
 stat_html = '<div class="rh-stats">'
-for label, val in zip(stat_labels, stat_vals):
+for label, val in [
+    ("CASH", f"${cash:,.0f}"),
+    ("INVESTED", f"${positions_value:,.0f}"),
+    ("P&L", f"${total_pl:+,.0f}"),
+    ("POWER", f"${buying_power:,.0f}"),
+    ("POS", str(len(positions))),
+]:
     stat_html += f'<div class="rh-stat"><div class="rh-stat-label">{label}</div><div class="rh-stat-val">{val}</div></div>'
 stat_html += '</div>'
 st.markdown(stat_html, unsafe_allow_html=True)
 
 # ========== POSITIONS ==========
 if positions:
-    st.markdown('<div style="height:8px;"></div>', unsafe_allow_html=True)
     st.markdown('<div class="rh-section">Positions</div>', unsafe_allow_html=True)
 
     sector_colors = {
@@ -448,7 +327,7 @@ if positions:
         "industrial": ("rgba(245,158,11,0.15)", "#F59E0B"),
         "telecom": ("rgba(6,182,212,0.15)", "#06B6D4"),
         "finance": ("rgba(34,197,94,0.15)", "#22C55E"),
-        "other": ("rgba(77,74,70,0.25)", "#4d4a46"),
+        "other": ("rgba(85,85,85,0.2)", "#555"),
     }
     sector_map = {
         "AAPL":"tech","MSFT":"tech","NVDA":"tech","AMZN":"tech","GOOGL":"tech",
@@ -478,7 +357,6 @@ if positions:
         value = float(p.market_value)
         sector = sector_map.get(sym, "other")
         bg, fg = sector_colors.get(sector, sector_colors["other"])
-
         pl_sign = "+" if pl >= 0 else ""
         pl_cls = "up" if pl >= 0 else "down"
 
@@ -499,8 +377,8 @@ if positions:
         """
     st.markdown(pos_html, unsafe_allow_html=True)
 
-    # ========== VS SPY CHART ==========
-    st.markdown('<div style="height:12px;"></div>', unsafe_allow_html=True)
+    # ========== VS SPY — simple two-line chart, no axes ==========
+    st.markdown('<div style="height:8px;"></div>', unsafe_allow_html=True)
     st.markdown('<div class="rh-section">vs SPY</div>', unsafe_allow_html=True)
 
     try:
@@ -523,56 +401,61 @@ if positions:
             if len(port_pct) == len(spy_pct):
                 fig2.add_trace(go.Scatter(
                     x=chart_dates, y=port_pct, name="You",
-                    line=dict(color="#00C805", width=2, shape="spline"),
-                    hovertemplate="%{y:+.2f}%<extra>You</extra>",
+                    line=dict(color="#00D64F", width=2.5, shape="spline"),
+                    hoverinfo="name+y",
                 ))
             fig2.add_trace(go.Scatter(
                 x=spy_dates, y=spy_pct, name="SPY",
-                line=dict(color="#58A6FF", width=1.5, shape="spline", dash="dot"),
-                hovertemplate="%{y:+.2f}%<extra>SPY</extra>",
+                line=dict(color="#555", width=1.5, shape="spline", dash="dot"),
+                hoverinfo="name+y",
             ))
             fig2.update_layout(
-                paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
-                font=dict(color="#4d4a46", size=11, family="Inter"),
-                margin=dict(l=0, r=0, t=8, b=0),
-                height=200,
-                xaxis=dict(showgrid=False, zeroline=False, showline=False,
-                           tickformat="%b %d", nticks=5,
-                           tickfont=dict(size=10, color="#35322d")),
-                yaxis=dict(showgrid=False, zeroline=False, showline=False,
-                           tickformat="+.1f%%", nticks=5, side="right",
-                           tickfont=dict(size=10, color="#35322d")),
+                height=180,
+                margin=dict(l=0, r=0, t=0, b=0),
+                paper_bgcolor="rgba(0,0,0,0)",
+                plot_bgcolor="rgba(0,0,0,0)",
+                xaxis=dict(visible=False, fixedrange=True),
+                yaxis=dict(visible=False, fixedrange=True),
+                hovermode="x unified",
+                hoverlabel=dict(
+                    bgcolor="#1A1A1A", bordercolor="#333",
+                    font=dict(size=12, color="#FFF", family="Inter"),
+                ),
+                showlegend=True,
                 legend=dict(
                     orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1,
-                    font=dict(size=11, color="#4d4a46"),
+                    font=dict(size=11, color="#555"),
                     bgcolor="rgba(0,0,0,0)", borderwidth=0,
                 ),
-                hovermode="x unified",
-                hoverlabel=dict(bgcolor="#1c180d", bordercolor="#35322d",
-                                font=dict(size=12, color="#FFFFFF", family="Inter")),
+                dragmode=False,
             )
-            st.plotly_chart(fig2, use_container_width=True)
+            st.plotly_chart(fig2, use_container_width=True, config={
+                "responsive": True,
+                "displayModeBar": False,
+                "displaylogo": False,
+                "scrollZoom": False,
+            })
     except Exception:
         pass
 
 else:
     st.markdown("""
-    <div style="text-align:center;padding:40px 24px;">
-        <div style="font-size:15px;font-weight:600;color:#FFFFFF;margin-bottom:6px;">No positions yet</div>
-        <div style="font-size:13px;color:#4d4a46;">The bot scans 280+ Sharia-compliant stocks every 10 minutes.</div>
+    <div style="text-align:center;padding:48px 24px;">
+        <div style="font-size:16px;font-weight:600;color:#FFF;margin-bottom:6px;">No positions</div>
+        <div style="font-size:13px;color:#555;">Bot scans 280+ stocks every 10 min.</div>
     </div>
     """, unsafe_allow_html=True)
 
-# ========== CASH ROW ==========
+# ========== CASH ==========
 st.markdown(f"""
 <div class="rh-cash">
     <div>
         <div class="rh-stat-label">CASH</div>
-        <div class="rh-stat-val">${cash:,.2f}</div>
+        <div class="rh-stat-val" style="font-size:15px;">${cash:,.2f}</div>
     </div>
     <div style="text-align:right;">
         <div class="rh-stat-label">BUYING POWER</div>
-        <div class="rh-stat-val">${buying_power:,.2f}</div>
+        <div class="rh-stat-val" style="font-size:15px;">${buying_power:,.2f}</div>
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -580,6 +463,6 @@ st.markdown(f"""
 # ========== FOOTER ==========
 st.markdown(f"""
 <div class="rh-footer">
-    Last updated: {datetime.now().strftime('%I:%M %p ET')} &bull; Paper Trading
+    {datetime.now().strftime('%I:%M %p')} &bull; Paper
 </div>
 """)
