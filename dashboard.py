@@ -6,7 +6,9 @@ from alpaca.data.historical.stock import StockHistoricalDataClient
 from alpaca.data.requests import StockBarsRequest
 from alpaca.data.timeframe import TimeFrame
 import plotly.graph_objects as go
-from database import get_performance_stats, get_recent_closed_trades, get_streak, get_best_worst_trade, get_trade_count_today
+from database import init_db, get_performance_stats, get_recent_closed_trades, get_streak, get_best_worst_trade, get_trade_count_today
+
+init_db()
 
 st.set_page_config(page_title="Trading Bot", layout="wide", initial_sidebar_state="collapsed")
 
