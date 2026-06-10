@@ -38,16 +38,37 @@ SLOW_MA = 50
 TREND_MA = 200
 
 # Universe
-TICKER_CACHE_FILE = "data/halal_stocks.json"
 TRADING_UNIVERSE = [
+    # Tech mega-cap
     "AAPL", "MSFT", "NVDA", "AMZN", "GOOGL", "META", "TSLA",
-    "AVGO", "LLY", "JNJ", "UNH", "XOM", "PG", "MA", "V",
-    "JPM", "COST", "HD", "ABBV", "CRM", "NFLX", "MRK", "BAC",
-    "AMD", "PEP", "KO", "TMO", "ACN", "LIN", "WMT", "MCD",
-    "CSCO", "ABT", "DHR", "NEE", "PM", "TXN", "UNP", "LOW",
-    "HON", "AMGN", "IBM", "CAT", "BA", "GS", "BLK", "AXP",
-    "SYK", "MDT", "GILD", "ISRG", "ADP", "VRTX", "REGN", "ADI",
-    "LRCX", "KLAC", "SNPS", "CDNS", "FTNT", "PANW", "NOW",
-    "PLTR", "CRWD", "DDOG", "ZS", "NET", "TEAM", "ABNB",
-    "COIN", "SQ", "SHOP", "SE", "MELI", "CPNG", "WDAY"
+    "AVGO", "ORCL", "ADBE", "CRM", "AMD", "INTC", "QCOM", "TXN",
+    # Cloud / SaaS
+    "NOW", "PLTR", "CRWD", "DDOG", "ZS", "NET", "TEAM", "SNPS", "CDNS", "PANW", "FTNT",
+    "WDAY", "VEEV", "PCTY", "PAYC", "BILL", "HUBS", "MDB", "GTLB", "CFLT",
+    # Semis
+    "LRCX", "KLAC", "AMAT", "MRVL", "ON", "MCHP", "QRVO", "SWKS",
+    # AI / Data
+    "AI", "BBAI", "SOUN", "UPST",
+    # E-commerce / Fintech
+    "SHOP", "SQ", "COIN", "ABNB", "SE", "MELI", "CPNG", "PYPL", "AFRM", "SOFI",
+    # Healthcare
+    "LLY", "JNJ", "UNH", "ABBV", "MRK", "TMO", "ABT", "DHR", "AMGN",
+    "GILD", "ISRG", "SYK", "MDT", "VRTX", "REGN", "BMY", "PFE", "ZTS", "ILMN",
+    # Consumer
+    "PG", "KO", "PEP", "COST", "HD", "MCD", "WMT", "LOW", "NKE", "SBUX",
+    "TGT", "CL", "EL", "GIS", "KMB", "SYY",
+    # Industrials
+    "CAT", "BA", "HON", "UNP", "RTX", "LMT", "DE", "GD", "WM",
+    "ETN", "EMR", "ITW", "ROK", "PH", "CMI",
+    # Financials (non-bank)
+    "V", "MA", "BLK", "SCHW", "CME", "ICE", "MSCI", "SPGI",
+    # Energy
+    "XOM", "CVX", "COP", "SLB", "EOG", "MPC", "PSX",
+    # Telecom / Media
+    "NFLX", "DIS", "CMCSA", "TMUS", "VZ", "T",
+    # Cloud infra
+    "SNOW", "DATADOG", "FSLY", "AKAM",
+    # Other growth
+    "TOST", "ARM", "APP", "DASH", "UBER", "LYFT",
+    "RBLX", "U", "TTD", "ROKU", "SPOT",
 ]
