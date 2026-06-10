@@ -67,8 +67,38 @@ TRADING_UNIVERSE = [
     # Telecom / Media
     "NFLX", "DIS", "CMCSA", "TMUS", "VZ", "T",
     # Cloud infra
-    "SNOW", "DATADOG", "FSLY", "AKAM",
+    "SNOW", "FSLY", "AKAM",
     # Other growth
     "TOST", "ARM", "APP", "DASH", "UBER", "LYFT",
     "RBLX", "U", "TTD", "ROKU", "SPOT",
+    # --- Mid-cap liquid additions ---
+    # Tech mid-cap
+    "WDC", "STX", "HPE", "DELL", "HPQ", "ERIC", "NOK",
+    "CGNX", "ANSS", "KEYS", "AZTA", "NOVT", "ICLR", "CRL", "DOCS",
+    "IONQ", "RGTI", "QMCO", "ARQQ",
+    # Cloud / Software mid-cap
+    "ZI", "COUR", "DOCU", "SPT", "VRNS", "TENB", "CYBR", "QLYS",
+    "VRNT", "PAMT", "CALX", "INFN", "CIEN", "LITE", "AAOI",
+    "ALRM", "LOV", "BR", "PFGC", "POOL",
+    # Healthcare mid-cap
+    "HOLX", "INCY", "ALNY", "EXAS", "NTRA", "CRSP", "BEAM",
+    "RARE", "HALO", "PTCT", "IONS", "SRPT", "NBIX", "UTHR",
+    "BMRN", "OGIV", "TVTX", "ARWR", "NKTX",
+    # Consumer mid-cap
+    "CAG", "SJM", "HSY", "MNST", "STZ", "KDP", "KHC", "CPB",
+    "CHD", "CPT", "TPR", "PVH", "RL", "VFC", "HBI", "LEVI",
+    "YUM", "DRI", "TXRH", "WING", "CAKE", "DPZ", "QSR",
+    # Industrials mid-cap
+    "FAST", "ODFL", "XPO", "JBHT", "CHRW", "EXPD", "UPS",
+    "DAL", "UAL", "LUV", "AAL", "ALK", "SKYW",
+    "JCI", "OTIS", "CTAS", "GWW", "SWK", "TT", "MASI",
+    # Energy mid-cap
+    "FANG", "DVN", "MRO", "OVV", "CTRA", "RRC", "AR",
+    "NOG", "SM", "MTDR", "PR", "PEDev",
+    # Financials mid-cap
+    "COF", "DFS", "SYF", "AXP", "MTB", "HBAN", "KEY", "CFG",
+    "PACW", "WAL", "FFIN", "SF", "WAFD",
+    # Materials / Other
+    "NEM", "FCX", "SCCO", "ALB", "LTHM", "SQM", "CF",
+    "DD", "SHW", "CE", "VMC", "MLM",
 ]
