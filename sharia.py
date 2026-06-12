@@ -73,7 +73,9 @@ class ShariaScreener:
             result["error"] = "No balance sheet data"
             return result
 
-        latest = bs.iloc[0]
+        # Balance sheet has dates as columns, metrics as rows
+        # Transpose so dates become rows, then take first (most recent)
+        latest = bs.iloc[:, 0]
 
         # Debt ratio
         short_debt = latest.get("Current Debt", 0) or 0
@@ -121,10 +123,15 @@ class ShariaScreener:
         result["ratios"]["impure_income_pct"] = round(impure_pct * 100, 2)
 
         impure_pass = impure_pct < IMPURE_INCOME_THRESHOLD
-        result["compliant"] = result["passes_business"] and result["passes_financial"] and impure_pass
+        result["passes_business"] = bool(result["passes_business"])
+        result["passes_financial"] = bool(result["passes_financial"])
+        result["compliant"] = bool(result["passes_business"] and result["passes_financial"] and impure_pass)
 
         self.cache[ticker] = result
-        self._save_cache()
+        try:
+            self._save_cache()
+        except (TypeError, ValueError):
+            pass  # Skip caching if non-serializable types
         return result
 
     def screen_batch(self, tickers: list, use_cache: bool = True) -> list:

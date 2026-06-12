@@ -234,6 +234,58 @@ def get_best_worst_trade():
     return rows[0], rows[-1]
 
 
+def log_journal(position_id, ticker, action, price, indicators, reasons, strategy=None, Sharia=None, risk_info=None):
+    conn = get_db()
+    c = conn.cursor()
+    import json as _json
+    c.execute(
+        "INSERT INTO journal (trade_id, pre_analysis, market_conditions, lessons) VALUES (?, ?, ?, ?)",
+        (
+            position_id,
+            _json.dumps({
+                "ticker": ticker,
+                "action": action,
+                "price": price,
+                "strategy": strategy,
+                "indicators": indicators,
+                "reasons": reasons,
+                "sharia": sharia,
+                "risk": risk_info,
+            }),
+            _json.dumps({"timestamp": datetime.now().isoformat()}),
+            None,
+        ),
+    )
+    conn.commit()
+    conn.close()
+
+
+def get_journal_entries(limit=20):
+    conn = get_db()
+    c = conn.cursor()
+    c.execute(
+        "SELECT j.id, j.pre_analysis, j.market_conditions, j.created_at, "
+        "p.symbol, p.avg_entry_price, p.exit_price, p.pnl, p.exit_reason "
+        "FROM journal j LEFT JOIN positions p ON j.trade_id = p.id "
+        "ORDER BY j.created_at DESC LIMIT ?",
+        (limit,),
+    )
+    rows = [dict(r) for r in c.fetchall()]
+    conn.close()
+
+    import json as _json
+    for row in rows:
+        try:
+            row["analysis"] = _json.loads(row["pre_analysis"]) if row["pre_analysis"] else {}
+        except Exception:
+            row["analysis"] = {}
+        try:
+            row["conditions"] = _json.loads(row["market_conditions"]) if row["market_conditions"] else {}
+        except Exception:
+            row["conditions"] = {}
+    return rows
+
+
 if __name__ == "__main__":
     init_db()
     print("Database initialized")

@@ -6,7 +6,7 @@ from alpaca.data.historical.stock import StockHistoricalDataClient
 from alpaca.data.requests import StockBarsRequest
 from alpaca.data.timeframe import TimeFrame
 import plotly.graph_objects as go
-from database import init_db, get_performance_stats, get_recent_closed_trades, get_streak, get_best_worst_trade, get_trade_count_today
+from database import init_db, get_performance_stats, get_recent_closed_trades, get_streak, get_best_worst_trade, get_trade_count_today, get_journal_entries
 
 init_db()
 
@@ -496,6 +496,52 @@ if perf["total_trades"] > 0:
     </div>
     """
     st.markdown(perf_html, unsafe_allow_html=True)
+
+# ========== TRADE JOURNAL ==========
+journal = get_journal_entries(10)
+if journal:
+    st.markdown('<div class="rh-section">Trade Journal</div>', unsafe_allow_html=True)
+
+    journal_html = ""
+    for entry in journal:
+        a = entry.get("analysis", {})
+        action = a.get("action", "?")
+        ticker = entry.get("symbol", a.get("ticker", "?"))
+        price = a.get("price", entry.get("avg_entry_price", 0))
+        strategy = a.get("strategy", "")
+        reasons = a.get("reasons", [])
+        sharia = a.get("sharia", {})
+        risk = a.get("risk", {})
+
+        action_color = "#00D64F" if "BUY" in action else "#FF5000"
+        dt_str = ""
+        if entry.get("created_at"):
+            try:
+                dt = datetime.fromisoformat(entry["created_at"])
+                dt_str = dt.strftime("%b %d %I:%M %p")
+            except Exception:
+                dt_str = ""
+
+        reason_text = "; ".join(reasons[:2]) if reasons else ""
+        sharia_text = ""
+        if sharia:
+            debt = sharia.get("debt")
+            if debt is not None:
+                sharia_text = f"Debt: {debt}%"
+
+        journal_html += f"""
+        <div class="rh-trade">
+            <div class="rh-trade-icon" style="background:{action_color}22;color:{action_color};font-size:9px;">{action[:4]}</div>
+            <div class="rh-trade-left">
+                <div class="rh-trade-ticker">{ticker} <span style="color:{action_color};font-size:11px;font-weight:600;">{action}</span></div>
+                <div class="rh-trade-sub">${price:.2f} | {strategy or reason_text[:50]}</div>
+            </div>
+            <div class="rh-trade-right">
+                <div class="rh-trade-date">{dt_str}</div>
+            </div>
+        </div>
+        """
+    st.markdown(journal_html, unsafe_allow_html=True)
 
 # ========== CASH ==========
 st.markdown(f"""
