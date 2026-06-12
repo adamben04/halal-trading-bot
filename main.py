@@ -70,11 +70,17 @@ class HalalTradingBot:
 
         # 5. Re-check Sharia on existing positions — sell any that became haram
         for pos in current_positions:
-            self._check_sharia(pos)
+            try:
+                self._check_sharia(pos)
+            except Exception as e:
+                log.warning(f"Sharia check failed for {pos['symbol']}: {e}")
 
         # 6. Check exits first
         for pos in current_positions:
-            self._check_exit(pos)
+            try:
+                self._check_exit(pos)
+            except Exception as e:
+                log.warning(f"Exit check failed for {pos['symbol']}: {e}")
 
         # 7. Scan for buy signals
         log.info("Scanning for buy signals...")
@@ -82,9 +88,12 @@ class HalalTradingBot:
             if ticker in current_symbols:
                 continue  # Already holding
 
-            signal = get_signals(ticker)
-            if signal.get("signal") == "BUY":
-                self._execute_buy(signal, account, current_positions)
+            try:
+                signal = get_signals(ticker)
+                if signal.get("signal") == "BUY":
+                    self._execute_buy(signal, account, current_positions)
+            except Exception as e:
+                log.warning(f"Signal check failed for {ticker}: {e}")
 
         # 8. Save daily snapshot
         positions_value = sum(p["market_value"] for p in current_positions)
@@ -184,16 +193,16 @@ class HalalTradingBot:
         if signal.get("signal") == "SELL":
             exit_reason = signal.get("reasons", ["Signal sell"])[0]
 
-        # Trailing stop
+        # Fixed stop loss from entry (ATR-based)
         atr = signal.get("indicators", {}).get("atr", 0)
-        if atr > 0:
+        if atr > 0 and not exit_reason:
             stop_price = entry_price - (atr * 2)
             if current_price <= stop_price:
                 exit_reason = f"ATR stop hit: ${stop_price:.2f}"
 
         # Take profit
         take_profit = signal.get("take_profit") or (entry_price * 1.10)
-        if current_price >= take_profit:
+        if not exit_reason and current_price >= take_profit:
             exit_reason = f"Take profit hit: ${take_profit:.2f}"
 
         if exit_reason:

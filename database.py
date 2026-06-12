@@ -76,35 +76,39 @@ def init_db():
 
 def log_open_position(symbol, qty, price, sector, reason):
     conn = get_db()
-    c = conn.cursor()
-    c.execute(
-        "INSERT INTO positions (symbol, qty, avg_entry_price, sector) VALUES (?, ?, ?, ?)",
-        (symbol, qty, price, sector)
-    )
-    position_id = c.lastrowid
-    c.execute(
-        "INSERT INTO trades (position_id, symbol, side, qty, price, reason) VALUES (?, ?, 'buy', ?, ?, ?)",
-        (position_id, symbol, qty, price, reason)
-    )
-    conn.commit()
-    conn.close()
-    return position_id
+    try:
+        c = conn.cursor()
+        c.execute(
+            "INSERT INTO positions (symbol, qty, avg_entry_price, sector) VALUES (?, ?, ?, ?)",
+            (symbol, qty, price, sector)
+        )
+        position_id = c.lastrowid
+        c.execute(
+            "INSERT INTO trades (position_id, symbol, side, qty, price, reason) VALUES (?, ?, 'buy', ?, ?, ?)",
+            (position_id, symbol, qty, price, reason)
+        )
+        conn.commit()
+        return position_id
+    finally:
+        conn.close()
 
 
 def log_close_position(position_id, exit_price, exit_reason, pnl):
     conn = get_db()
-    c = conn.cursor()
-    c.execute(
-        "UPDATE positions SET closed_at=?, exit_price=?, exit_reason=?, pnl=? WHERE id=?",
-        (datetime.now().isoformat(), exit_price, exit_reason, pnl, position_id)
-    )
-    c.execute(
-        "INSERT INTO trades (position_id, symbol, side, qty, price, reason) "
-        "SELECT id, symbol, 'sell', qty, ?, ? FROM positions WHERE id=?",
-        (exit_price, exit_reason, position_id)
-    )
-    conn.commit()
-    conn.close()
+    try:
+        c = conn.cursor()
+        c.execute(
+            "UPDATE positions SET closed_at=?, exit_price=?, exit_reason=?, pnl=? WHERE id=?",
+            (datetime.now().isoformat(), exit_price, exit_reason, pnl, position_id)
+        )
+        c.execute(
+            "INSERT INTO trades (position_id, symbol, side, qty, price, reason) "
+            "SELECT id, symbol, 'sell', qty, ?, ? FROM positions WHERE id=?",
+            (exit_price, exit_reason, position_id)
+        )
+        conn.commit()
+    finally:
+        conn.close()
 
 
 def save_daily_snapshot(equity, cash, positions_value, daily_pnl, total_return_pct):
@@ -149,16 +153,18 @@ def get_daily_snapshots():
 
 def get_performance_stats():
     conn = get_db()
-    c = conn.cursor()
-    c.execute("SELECT * FROM positions WHERE closed_at IS NOT NULL")
-    closed = [dict(r) for r in c.fetchall()]
-    conn.close()
+    try:
+        c = conn.cursor()
+        c.execute("SELECT * FROM positions WHERE closed_at IS NOT NULL")
+        closed = [dict(r) for r in c.fetchall()]
+    finally:
+        conn.close()
 
     if not closed:
         return {"total_trades": 0, "win_rate": 0, "avg_pnl": 0, "profit_factor": 0}
 
-    wins = [t for t in closed if t.get("pnl", 0) > 0]
-    losses = [t for t in closed if t.get("pnl", 0) <= 0]
+    wins = [t for t in closed if (t.get("pnl") or 0) > 0]
+    losses = [t for t in closed if (t.get("pnl") or 0) <= 0]
     total_win = sum(t["pnl"] for t in wins)
     total_loss = abs(sum(t["pnl"] for t in losses))
 
@@ -234,53 +240,55 @@ def get_best_worst_trade():
     return rows[0], rows[-1]
 
 
-def log_journal(position_id, ticker, action, price, indicators, reasons, strategy=None, Sharia=None, risk_info=None):
+def log_journal(position_id, ticker, action, price, indicators, reasons, strategy=None, sharia=None, risk_info=None):
     conn = get_db()
-    c = conn.cursor()
-    import json as _json
-    c.execute(
-        "INSERT INTO journal (trade_id, pre_analysis, market_conditions, lessons) VALUES (?, ?, ?, ?)",
-        (
-            position_id,
-            _json.dumps({
-                "ticker": ticker,
-                "action": action,
-                "price": price,
-                "strategy": strategy,
-                "indicators": indicators,
-                "reasons": reasons,
-                "sharia": sharia,
-                "risk": risk_info,
-            }),
-            _json.dumps({"timestamp": datetime.now().isoformat()}),
-            None,
-        ),
-    )
-    conn.commit()
-    conn.close()
+    try:
+        c = conn.cursor()
+        c.execute(
+            "INSERT INTO journal (trade_id, pre_analysis, market_conditions, lessons) VALUES (?, ?, ?, ?)",
+            (
+                position_id,
+                json.dumps({
+                    "ticker": ticker,
+                    "action": action,
+                    "price": price,
+                    "strategy": strategy,
+                    "indicators": indicators,
+                    "reasons": reasons,
+                    "sharia": sharia,
+                    "risk": risk_info,
+                }),
+                json.dumps({"timestamp": datetime.now().isoformat()}),
+                None,
+            ),
+        )
+        conn.commit()
+    finally:
+        conn.close()
 
 
 def get_journal_entries(limit=20):
     conn = get_db()
-    c = conn.cursor()
-    c.execute(
-        "SELECT j.id, j.pre_analysis, j.market_conditions, j.created_at, "
-        "p.symbol, p.avg_entry_price, p.exit_price, p.pnl, p.exit_reason "
-        "FROM journal j LEFT JOIN positions p ON j.trade_id = p.id "
-        "ORDER BY j.created_at DESC LIMIT ?",
-        (limit,),
-    )
-    rows = [dict(r) for r in c.fetchall()]
-    conn.close()
+    try:
+        c = conn.cursor()
+        c.execute(
+            "SELECT j.id, j.pre_analysis, j.market_conditions, j.created_at, "
+            "p.symbol, p.avg_entry_price, p.exit_price, p.pnl, p.exit_reason "
+            "FROM journal j LEFT JOIN positions p ON j.trade_id = p.id "
+            "ORDER BY j.created_at DESC LIMIT ?",
+            (limit,),
+        )
+        rows = [dict(r) for r in c.fetchall()]
+    finally:
+        conn.close()
 
-    import json as _json
     for row in rows:
         try:
-            row["analysis"] = _json.loads(row["pre_analysis"]) if row["pre_analysis"] else {}
+            row["analysis"] = json.loads(row["pre_analysis"]) if row["pre_analysis"] else {}
         except Exception:
             row["analysis"] = {}
         try:
-            row["conditions"] = _json.loads(row["market_conditions"]) if row["market_conditions"] else {}
+            row["conditions"] = json.loads(row["market_conditions"]) if row["market_conditions"] else {}
         except Exception:
             row["conditions"] = {}
     return rows
@@ -288,29 +296,30 @@ def get_journal_entries(limit=20):
 
 def get_full_trade_history(limit=50):
     conn = get_db()
-    c = conn.cursor()
-    c.execute("""
-        SELECT 
-            p.id, p.symbol, p.qty, p.avg_entry_price, p.exit_price, 
-            p.pnl, p.exit_reason, p.opened_at, p.closed_at, p.sector,
-            j.pre_analysis, j.market_conditions
-        FROM positions p
-        LEFT JOIN journal j ON j.trade_id = p.id
-        WHERE p.closed_at IS NOT NULL
-        ORDER BY p.closed_at DESC
-        LIMIT ?
-    """, (limit,))
-    rows = [dict(r) for r in c.fetchall()]
-    conn.close()
+    try:
+        c = conn.cursor()
+        c.execute("""
+            SELECT 
+                p.id, p.symbol, p.qty, p.avg_entry_price, p.exit_price, 
+                p.pnl, p.exit_reason, p.opened_at, p.closed_at, p.sector,
+                j.pre_analysis, j.market_conditions
+            FROM positions p
+            LEFT JOIN journal j ON j.trade_id = p.id
+            WHERE p.closed_at IS NOT NULL
+            ORDER BY p.closed_at DESC
+            LIMIT ?
+        """, (limit,))
+        rows = [dict(r) for r in c.fetchall()]
+    finally:
+        conn.close()
 
-    import json as _json
     for row in rows:
         try:
-            row["journal"] = _json.loads(row["pre_analysis"]) if row["pre_analysis"] else {}
+            row["journal"] = json.loads(row["pre_analysis"]) if row["pre_analysis"] else {}
         except Exception:
             row["journal"] = {}
         try:
-            row["market"] = _json.loads(row["market_conditions"]) if row["market_conditions"] else {}
+            row["market"] = json.loads(row["market_conditions"]) if row["market_conditions"] else {}
         except Exception:
             row["market"] = {}
         if row["opened_at"] and row["closed_at"]:
@@ -327,34 +336,37 @@ def get_full_trade_history(limit=50):
 
 def get_calendar_pnl():
     conn = get_db()
-    c = conn.cursor()
-    c.execute("""
-        SELECT DATE(closed_at) as day, SUM(pnl) as daily_pnl, COUNT(*) as trades
-        FROM positions WHERE closed_at IS NOT NULL
-        GROUP BY DATE(closed_at) ORDER BY day
-    """)
-    rows = [dict(r) for r in c.fetchall()]
-    conn.close()
+    try:
+        c = conn.cursor()
+        c.execute("""
+            SELECT DATE(closed_at) as day, SUM(pnl) as daily_pnl, COUNT(*) as trades
+            FROM positions WHERE closed_at IS NOT NULL
+            GROUP BY DATE(closed_at) ORDER BY day
+        """)
+        rows = [dict(r) for r in c.fetchall()]
+    finally:
+        conn.close()
     return rows
 
 
 def get_stats_by_strategy():
     conn = get_db()
-    c = conn.cursor()
-    c.execute("""
-        SELECT j.pre_analysis, p.pnl
-        FROM positions p
-        LEFT JOIN journal j ON j.trade_id = p.id
-        WHERE p.closed_at IS NOT NULL AND j.pre_analysis IS NOT NULL
-    """)
-    rows = [dict(r) for r in c.fetchall()]
-    conn.close()
+    try:
+        c = conn.cursor()
+        c.execute("""
+            SELECT j.pre_analysis, p.pnl
+            FROM positions p
+            LEFT JOIN journal j ON j.trade_id = p.id
+            WHERE p.closed_at IS NOT NULL AND j.pre_analysis IS NOT NULL
+        """)
+        rows = [dict(r) for r in c.fetchall()]
+    finally:
+        conn.close()
 
-    import json as _json
     strategies = {}
     for row in rows:
         try:
-            analysis = _json.loads(row["pre_analysis"])
+            analysis = json.loads(row["pre_analysis"])
             strategy = analysis.get("strategy", "Unknown")
         except Exception:
             strategy = "Unknown"
