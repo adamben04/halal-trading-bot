@@ -286,6 +286,103 @@ def get_journal_entries(limit=20):
     return rows
 
 
+def get_full_trade_history(limit=50):
+    conn = get_db()
+    c = conn.cursor()
+    c.execute("""
+        SELECT 
+            p.id, p.symbol, p.qty, p.avg_entry_price, p.exit_price, 
+            p.pnl, p.exit_reason, p.opened_at, p.closed_at, p.sector,
+            j.pre_analysis, j.market_conditions
+        FROM positions p
+        LEFT JOIN journal j ON j.trade_id = p.id
+        WHERE p.closed_at IS NOT NULL
+        ORDER BY p.closed_at DESC
+        LIMIT ?
+    """, (limit,))
+    rows = [dict(r) for r in c.fetchall()]
+    conn.close()
+
+    import json as _json
+    for row in rows:
+        try:
+            row["journal"] = _json.loads(row["pre_analysis"]) if row["pre_analysis"] else {}
+        except Exception:
+            row["journal"] = {}
+        try:
+            row["market"] = _json.loads(row["market_conditions"]) if row["market_conditions"] else {}
+        except Exception:
+            row["market"] = {}
+        if row["opened_at"] and row["closed_at"]:
+            try:
+                opened = datetime.fromisoformat(row["opened_at"])
+                closed = datetime.fromisoformat(row["closed_at"])
+                row["hold_hours"] = round((closed - opened).total_seconds() / 3600, 1)
+            except Exception:
+                row["hold_hours"] = 0
+        else:
+            row["hold_hours"] = 0
+    return rows
+
+
+def get_calendar_pnl():
+    conn = get_db()
+    c = conn.cursor()
+    c.execute("""
+        SELECT DATE(closed_at) as day, SUM(pnl) as daily_pnl, COUNT(*) as trades
+        FROM positions WHERE closed_at IS NOT NULL
+        GROUP BY DATE(closed_at) ORDER BY day
+    """)
+    rows = [dict(r) for r in c.fetchall()]
+    conn.close()
+    return rows
+
+
+def get_stats_by_strategy():
+    conn = get_db()
+    c = conn.cursor()
+    c.execute("""
+        SELECT j.pre_analysis, p.pnl
+        FROM positions p
+        LEFT JOIN journal j ON j.trade_id = p.id
+        WHERE p.closed_at IS NOT NULL AND j.pre_analysis IS NOT NULL
+    """)
+    rows = [dict(r) for r in c.fetchall()]
+    conn.close()
+
+    import json as _json
+    strategies = {}
+    for row in rows:
+        try:
+            analysis = _json.loads(row["pre_analysis"])
+            strategy = analysis.get("strategy", "Unknown")
+        except Exception:
+            strategy = "Unknown"
+        if strategy not in strategies:
+            strategies[strategy] = {"wins": 0, "losses": 0, "total_pnl": 0, "trades": []}
+        pnl = row.get("pnl") or 0
+        strategies[strategy]["trades"].append(pnl)
+        strategies[strategy]["total_pnl"] += pnl
+        if pnl > 0:
+            strategies[strategy]["wins"] += 1
+        else:
+            strategies[strategy]["losses"] += 1
+
+    result = []
+    for strategy, data in strategies.items():
+        total = data["wins"] + data["losses"]
+        result.append({
+            "strategy": strategy,
+            "trades": total,
+            "wins": data["wins"],
+            "losses": data["losses"],
+            "win_rate": round(data["wins"] / total * 100, 1) if total > 0 else 0,
+            "total_pnl": round(data["total_pnl"], 2),
+            "avg_pnl": round(data["total_pnl"] / total, 2) if total > 0 else 0,
+        })
+    return sorted(result, key=lambda x: x["trades"], reverse=True)
+
+
 if __name__ == "__main__":
     init_db()
     print("Database initialized")

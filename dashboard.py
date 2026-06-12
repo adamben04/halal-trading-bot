@@ -6,7 +6,7 @@ from alpaca.data.historical.stock import StockHistoricalDataClient
 from alpaca.data.requests import StockBarsRequest
 from alpaca.data.timeframe import TimeFrame
 import plotly.graph_objects as go
-from database import init_db, get_performance_stats, get_recent_closed_trades, get_streak, get_best_worst_trade, get_trade_count_today, get_journal_entries
+from database import init_db, get_performance_stats, get_recent_closed_trades, get_streak, get_best_worst_trade, get_trade_count_today, get_journal_entries, get_full_trade_history, get_calendar_pnl, get_stats_by_strategy
 
 init_db()
 
@@ -149,6 +149,80 @@ st.markdown("""
     }
 
     .modebar { display: none !important; }
+
+    /* ===== TRADE HISTORY CARD ===== */
+    .rh-th-card {
+        background: #0A0A0A; border: 1px solid #1A1A1A; margin: 8px 0;
+        overflow: hidden;
+    }
+    .rh-th-header {
+        display: flex; align-items: center; padding: 12px 14px;
+        border-bottom: 1px solid #1A1A1A;
+    }
+    .rh-th-badge {
+        width: 36px; height: 36px; border-radius: 18px;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 700; font-size: 12px; flex-shrink: 0; margin-right: 10px;
+    }
+    .rh-th-badge.buy { background: rgba(0,214,79,0.15); color: #00D64F; }
+    .rh-th-badge.sell { background: rgba(255,80,0,0.15); color: #FF5000; }
+    .rh-th-title { font-size: 15px; font-weight: 600; color: #FFF; }
+    .rh-th-subtitle { font-size: 11px; color: #555; margin-top: 1px; }
+    .rh-th-pnl-col { margin-left: auto; text-align: right; }
+    .rh-th-pnl { font-size: 15px; font-weight: 700; font-feature-settings: 'tnum'; }
+    .rh-th-pnl.up { color: #00D64F; }
+    .rh-th-pnl.down { color: #FF5000; }
+    .rh-th-pnl-pct { font-size: 11px; color: #555; }
+
+    .rh-th-body { padding: 0; }
+    .rh-th-row {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 8px 14px; border-bottom: 1px solid #111;
+    }
+    .rh-th-row:last-child { border-bottom: none; }
+    .rh-th-label { font-size: 11px; color: #555; text-transform: uppercase; letter-spacing: 0.04em; }
+    .rh-th-val { font-size: 13px; color: #FFF; font-weight: 500; text-align: right; max-width: 60%; }
+
+    .rh-th-section {
+        padding: 10px 14px; border-top: 1px solid #1A1A1A;
+    }
+    .rh-th-section-title {
+        font-size: 10px; font-weight: 700; text-transform: uppercase;
+        letter-spacing: 0.06em; color: #555; margin-bottom: 6px;
+    }
+    .rh-th-reason {
+        font-size: 12px; color: #888; line-height: 1.4; margin: 3px 0;
+    }
+    .rh-th-reason strong { color: #FFF; }
+
+    /* ===== CALENDAR HEATMAP ===== */
+    .rh-cal {
+        display: grid; grid-template-columns: repeat(7, 1fr);
+        gap: 2px; margin: 8px 0;
+    }
+    .rh-cal-head {
+        font-size: 9px; font-weight: 700; color: #555;
+        text-align: center; padding: 4px 0; text-transform: uppercase;
+    }
+    .rh-cal-day {
+        aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+        font-size: 10px; font-weight: 600; color: #555; border-radius: 3px;
+    }
+    .rh-cal-day.win { background: rgba(0,214,79,0.2); color: #00D64F; }
+    .rh-cal-day.loss { background: rgba(255,80,0,0.2); color: #FF5000; }
+    .rh-cal-day.neutral { background: #1A1A1A; color: #555; }
+    .rh-cal-day.empty { background: transparent; }
+
+    /* ===== STRATEGY STATS ===== */
+    .rh-strat {
+        display: flex; align-items: center; padding: 10px 0;
+        border-bottom: 1px solid #111;
+    }
+    .rh-strat:last-child { border-bottom: none; }
+    .rh-strat-name { font-size: 13px; font-weight: 600; color: #FFF; flex: 1; }
+    .rh-strat-stat { text-align: center; padding: 0 8px; }
+    .rh-strat-stat-val { font-size: 13px; font-weight: 600; color: #FFF; }
+    .rh-strat-stat-label { font-size: 9px; color: #555; text-transform: uppercase; }
 
     @media (max-width: 480px) {
         .block-container { padding-left: 12px !important; padding-right: 12px !important; }
@@ -435,42 +509,6 @@ else:
     </div>
     """, unsafe_allow_html=True)
 
-# ========== RECENT TRADES ==========
-recent = get_recent_closed_trades(5)
-if recent:
-    st.markdown('<div class="rh-section">Recent Trades</div>', unsafe_allow_html=True)
-
-    trades_html = ""
-    for t in recent:
-        sym = t["symbol"]
-        pnl = t.get("pnl") or 0
-        entry = t.get("avg_entry_price") or 0
-        exit_p = t.get("exit_price") or 0
-        closed = t.get("closed_at", "")
-        pl_sign = "+" if pnl >= 0 else ""
-        pl_cls = "up" if pnl >= 0 else "down"
-
-        try:
-            dt = datetime.fromisoformat(closed)
-            date_str = dt.strftime("%b %d")
-        except Exception:
-            date_str = ""
-
-        trades_html += f"""
-        <div class="rh-trade">
-            <div class="rh-trade-icon" style="background:rgba(0,214,79,0.1);color:#00D64F;">{sym[:2]}</div>
-            <div class="rh-trade-left">
-                <div class="rh-trade-ticker">{sym}</div>
-                <div class="rh-trade-sub">${entry:.2f} → ${exit_p:.2f}</div>
-            </div>
-            <div class="rh-trade-right">
-                <div class="rh-trade-pnl {pl_cls}">{pl_sign}${pnl:,.2f}</div>
-                <div class="rh-trade-date">{date_str}</div>
-            </div>
-        </div>
-        """
-    st.markdown(trades_html, unsafe_allow_html=True)
-
 # ========== PERFORMANCE ==========
 if perf["total_trades"] > 0:
     st.markdown('<div class="rh-section">Performance</div>', unsafe_allow_html=True)
@@ -497,51 +535,191 @@ if perf["total_trades"] > 0:
     """
     st.markdown(perf_html, unsafe_allow_html=True)
 
-# ========== TRADE JOURNAL ==========
-journal = get_journal_entries(10)
-if journal:
-    st.markdown('<div class="rh-section">Trade Journal</div>', unsafe_allow_html=True)
+# ========== TRADE HISTORY ==========
+full_history = get_full_trade_history(20)
+if full_history:
+    st.markdown('<div class="rh-section">Trade History</div>', unsafe_allow_html=True)
 
-    journal_html = ""
-    for entry in journal:
-        a = entry.get("analysis", {})
-        action = a.get("action", "?")
-        ticker = entry.get("symbol", a.get("ticker", "?"))
-        price = a.get("price", entry.get("avg_entry_price", 0))
-        strategy = a.get("strategy", "")
-        reasons = a.get("reasons", [])
-        sharia = a.get("sharia", {})
-        risk = a.get("risk", {})
+    for trade in full_history:
+        symbol = trade["symbol"]
+        entry = trade["avg_entry_price"] or 0
+        exit_p = trade["exit_price"] or 0
+        pnl = trade["pnl"] or 0
+        qty = trade["qty"] or 0
+        reason = trade["exit_reason"] or ""
+        sector = trade["sector"] or "Other"
+        opened = trade["opened_at"] or ""
+        closed = trade["closed_at"] or ""
+        hold_hours = trade.get("hold_hours", 0)
+        journal = trade.get("journal", {})
 
-        action_color = "#00D64F" if "BUY" in action else "#FF5000"
-        dt_str = ""
-        if entry.get("created_at"):
-            try:
-                dt = datetime.fromisoformat(entry["created_at"])
-                dt_str = dt.strftime("%b %d %I:%M %p")
-            except Exception:
-                dt_str = ""
+        pnl_pct = ((exit_p / entry - 1) * 100) if entry > 0 else 0
+        pl_sign = "+" if pnl >= 0 else ""
+        pl_cls = "up" if pnl >= 0 else "down"
+        badge_cls = "buy" if pnl >= 0 else "sell"
 
-        reason_text = "; ".join(reasons[:2]) if reasons else ""
-        sharia_text = ""
-        if sharia:
-            debt = sharia.get("debt")
-            if debt is not None:
-                sharia_text = f"Debt: {debt}%"
+        try:
+            opened_dt = datetime.fromisoformat(opened)
+            opened_str = opened_dt.strftime("%b %d, %I:%M %p")
+        except:
+            opened_str = opened[:10] if opened else "--"
+        try:
+            closed_dt = datetime.fromisoformat(closed)
+            closed_str = closed_dt.strftime("%b %d, %I:%M %p")
+        except:
+            closed_str = closed[:10] if closed else "--"
 
-        journal_html += f"""
-        <div class="rh-trade">
-            <div class="rh-trade-icon" style="background:{action_color}22;color:{action_color};font-size:9px;">{action[:4]}</div>
-            <div class="rh-trade-left">
-                <div class="rh-trade-ticker">{ticker} <span style="color:{action_color};font-size:11px;font-weight:600;">{action}</span></div>
-                <div class="rh-trade-sub">${price:.2f} | {strategy or reason_text[:50]}</div>
+        if hold_hours >= 24:
+            hold_str = f"{hold_hours/24:.1f}d"
+        elif hold_hours >= 1:
+            hold_str = f"{hold_hours:.0f}h"
+        else:
+            hold_str = f"{hold_hours*60:.0f}m"
+
+        reasons = journal.get("reasons", [])
+        strategy = journal.get("strategy", "")
+        indicators = journal.get("indicators", {})
+        sharia = journal.get("sharia", {})
+
+        card_html = f"""
+        <div class="rh-th-card">
+            <div class="rh-th-header">
+                <div class="rh-th-badge {badge_cls}">{symbol[:2]}</div>
+                <div>
+                    <div class="rh-th-title">{symbol}</div>
+                    <div class="rh-th-subtitle">{sector} &bull; {opened_str}</div>
+                </div>
+                <div class="rh-th-pnl-col">
+                    <div class="rh-th-pnl {pl_cls}">{pl_sign}${pnl:,.2f}</div>
+                    <div class="rh-th-pnl-pct">{pl_sign}{pnl_pct:.1f}%</div>
+                </div>
             </div>
-            <div class="rh-trade-right">
-                <div class="rh-trade-date">{dt_str}</div>
+            <div class="rh-th-body">
+                <div class="rh-th-row">
+                    <span class="rh-th-label">Entry</span>
+                    <span class="rh-th-val">${entry:.2f} &times; {qty:.0f} shares</span>
+                </div>
+                <div class="rh-th-row">
+                    <span class="rh-th-label">Exit</span>
+                    <span class="rh-th-val">${exit_p:.2f}</span>
+                </div>
+                <div class="rh-th-row">
+                    <span class="rh-th-label">Hold</span>
+                    <span class="rh-th-val">{hold_str}</span>
+                </div>
+                <div class="rh-th-row">
+                    <span class="rh-th-label">Exit Reason</span>
+                    <span class="rh-th-val">{reason[:60]}</span>
+                </div>
+        """
+        if strategy:
+            card_html += f"""
+                <div class="rh-th-row">
+                    <span class="rh-th-label">Strategy</span>
+                    <span class="rh-th-val">{strategy}</span>
+                </div>
+            """
+        if sharia and sharia.get("debt") is not None:
+            card_html += f"""
+                <div class="rh-th-row">
+                    <span class="rh-th-label">Sharia Debt</span>
+                    <span class="rh-th-val">{sharia['debt']}%</span>
+                </div>
+            """
+        card_html += "</div>"
+
+        if reasons:
+            card_html += '<div class="rh-th-section"><div class="rh-th-section-title">Why I Bought</div>'
+            for r in reasons[:3]:
+                card_html += f'<div class="rh-th-reason">&bull; <strong>{r}</strong></div>'
+            card_html += "</div>"
+
+        if indicators:
+            rsi = indicators.get("rsi")
+            adx = indicators.get("adx")
+            atr = indicators.get("atr")
+            if rsi or adx:
+                card_html += '<div class="rh-th-section"><div class="rh-th-section-title">Indicators at Entry</div><div style="display:flex;gap:16px;">'
+                if rsi:
+                    card_html += f'<div class="rh-th-reason">RSI(14): <strong>{rsi:.1f}</strong></div>'
+                if adx:
+                    card_html += f'<div class="rh-th-reason">ADX: <strong>{adx:.1f}</strong></div>'
+                if atr:
+                    card_html += f'<div class="rh-th-reason">ATR: <strong>${atr:.2f}</strong></div>'
+                card_html += "</div></div>"
+
+        card_html += "</div>"
+        st.markdown(card_html, unsafe_allow_html=True)
+
+# ========== CALENDAR HEATMAP ==========
+calendar_data = get_calendar_pnl()
+if calendar_data:
+    st.markdown('<div class="rh-section">Monthly P&L</div>', unsafe_allow_html=True)
+
+    from datetime import date
+    today = date.today()
+    year = today.year
+    month = today.month
+
+    cal_html = '<div class="rh-cal">'
+    for head in ["S", "M", "T", "W", "T", "F", "S"]:
+        cal_html += f'<div class="rh-cal-head">{head}</div>'
+
+    import calendar as cal_mod
+    cal = cal_mod.monthcalendar(year, month)
+    pnl_map = {r["day"]: r["daily_pnl"] for r in calendar_data if r["day"]}
+
+    for week in cal:
+        for day in week:
+            if day == 0:
+                cal_html += '<div class="rh-cal-day empty"></div>'
+            else:
+                day_str = f"{year}-{month:02d}-{day:02d}"
+                if day_str in pnl_map:
+                    pnl = pnl_map[day_str]
+                    cls = "win" if pnl > 0 else "loss" if pnl < 0 else "neutral"
+                    cal_html += f'<div class="rh-cal-day {cls}">{day}</div>'
+                elif day <= today.day:
+                    cal_html += f'<div class="rh-cal-day neutral">{day}</div>'
+                else:
+                    cal_html += f'<div class="rh-cal-day empty">{day}</div>'
+    cal_html += "</div>"
+
+    month_pnl = sum(r["daily_pnl"] for r in calendar_data
+                    if r["day"] and r["day"][:7] == f"{year}-{month:02d}")
+    mp_sign = "+" if month_pnl >= 0 else ""
+    mp_cls = "up" if month_pnl >= 0 else "down"
+    cal_html += f'<div style="text-align:center;margin-top:8px;"><span class="rh-th-pnl {mp_cls}" style="font-size:14px;">{mp_sign}${month_pnl:,.2f}</span> <span style="font-size:11px;color:#555;">this month</span></div>'
+    st.markdown(cal_html, unsafe_allow_html=True)
+
+# ========== STRATEGY STATS ==========
+strat_stats = get_stats_by_strategy()
+if strat_stats:
+    st.markdown('<div class="rh-section">By Strategy</div>', unsafe_allow_html=True)
+
+    strat_html = ""
+    for s in strat_stats:
+        wr_cls = "up" if s["win_rate"] >= 50 else "down"
+        pnl_cls = "up" if s["total_pnl"] >= 0 else "down"
+        pnl_sign = "+" if s["total_pnl"] >= 0 else ""
+        strat_html += f"""
+        <div class="rh-strat">
+            <div class="rh-strat-name">{s['strategy']}</div>
+            <div class="rh-strat-stat">
+                <div class="rh-strat-stat-val {wr_cls}">{s['win_rate']}%</div>
+                <div class="rh-strat-stat-label">Win Rate</div>
+            </div>
+            <div class="rh-strat-stat">
+                <div class="rh-strat-stat-val">{s['trades']}</div>
+                <div class="rh-strat-stat-label">Trades</div>
+            </div>
+            <div class="rh-strat-stat">
+                <div class="rh-strat-stat-val {pnl_cls}">{pnl_sign}${s['total_pnl']:,.0f}</div>
+                <div class="rh-strat-stat-label">P&L</div>
             </div>
         </div>
         """
-    st.markdown(journal_html, unsafe_allow_html=True)
+    st.markdown(strat_html, unsafe_allow_html=True)
 
 # ========== CASH ==========
 st.markdown(f"""
