@@ -1,12 +1,27 @@
 import streamlit as st
 import os
 from datetime import datetime, timedelta
-from alpaca.trading.client import TradingClient
-from alpaca.data.historical.stock import StockHistoricalDataClient
-from alpaca.data.requests import StockBarsRequest
-from alpaca.data.timeframe import TimeFrame
-import plotly.graph_objects as go
-from database import init_db, get_performance_stats, get_recent_closed_trades, get_streak, get_best_worst_trade, get_trade_count_today, get_journal_entries, get_full_trade_history, get_calendar_pnl, get_stats_by_strategy
+
+try:
+    from alpaca.trading.client import TradingClient
+    from alpaca.data.historical.stock import StockHistoricalDataClient
+    from alpaca.data.requests import StockBarsRequest
+    from alpaca.data.timeframe import TimeFrame
+except ImportError as e:
+    st.error(f"Failed to import Alpaca packages: {e}. Check requirements.txt")
+    st.stop()
+
+try:
+    import plotly.graph_objects as go
+except ImportError as e:
+    st.error(f"Failed to import plotly: {e}. Check requirements.txt")
+    st.stop()
+
+try:
+    from database import init_db, get_performance_stats, get_streak, get_best_worst_trade, get_trade_count_today, get_journal_entries, get_full_trade_history, get_calendar_pnl, get_stats_by_strategy
+except ImportError as e:
+    st.error(f"Failed to import database module: {e}")
+    st.stop()
 
 init_db()
 
