@@ -268,7 +268,7 @@ try:
     clock = trading_client.get_clock()
     positions = trading_client.get_all_positions()
 except Exception as e:
-    st.error(f"Connection failed: {e}")
+    st.error(f"Alpaca connection failed: {type(e).__name__}")
     st.stop()
 
 equity = float(account.equity)
